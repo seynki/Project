@@ -287,9 +287,8 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                 # Client requests a question for a cell
                 cell_index = message.get("cell_index")
                 
-                if room_code in rooms:
-                    room = rooms[room_code]
-                    
+                room = await load_room_from_db(room_code)
+                if room:
                     # Set current question and selected cell
                     from questions import get_random_question
                     question = get_random_question()
