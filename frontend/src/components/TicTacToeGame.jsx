@@ -212,11 +212,16 @@ const TicTacToeGame = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-green-800 mb-2">
-            Jogo da Velha Histórico
+            Jogo da Velha Histórico - 2 Jogadores
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 mb-2">
             História do Brasil • 1500 - Primeira República
           </p>
+          {gameStatus === 'playing' && (
+            <div className="text-2xl font-bold text-blue-800">
+              Vez do Jogador: <span className="text-purple-600">{currentPlayer}</span>
+            </div>
+          )}
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
