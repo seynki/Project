@@ -319,11 +319,11 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                     room["selected_cell"] = cell_index
                     
                     # Send question to the current player
-                    await websocket.send_text(json.dumps({
+                    await safe_send_json(websocket, {
                         "type": "question",
                         "question": question,
                         "cell_index": cell_index
-                    }))
+                    })
                     
                     # Notify other player that someone is answering
                     await broadcast_to_room(room_code, {
