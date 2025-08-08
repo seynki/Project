@@ -281,10 +281,10 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                         "player_count": len(room["players"])
                     })
                 else:
-                    await websocket.send_text(json.dumps({
+                    await safe_send_json(websocket, {
                         "type": "error",
                         "message": "Sala não encontrada"
-                    }))
+                    })
             
             elif message_type == "make_move":
                 # Player makes a move
