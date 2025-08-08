@@ -270,9 +270,8 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                 selected_answer = message.get("selected_answer")
                 question = message.get("question")
                 
-                if room_code in rooms:
-                    room = rooms[room_code]
-                    
+                room = await load_room_from_db(room_code)
+                if room:
                     # Validate it's the player's turn
                     if room["current_player_id"] != player_id:
                         await websocket.send_text(json.dumps({
