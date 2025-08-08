@@ -150,6 +150,30 @@ async def create_room(request: CreateRoomRequest):
     
     return CreateRoomResponse(room_code=room_code, player_id=player_id)
 
+async def load_room_from_db(room_code: str) -> Optional[Dict]:
+    """Load room data from database if not in memory"""
+    if room_code in rooms:
+        return rooms[room_code]
+    
+    # Try to load from database
+    db_room = await db.game_rooms.find_one({"_id": room_code})
+    if db_room:
+        # Convert back to memory format
+        room_data = {
+            "room_code": db_room["room_code"],
+            "players": db_room["players"],
+            "player_symbols": db_room["player_symbols"],
+            "board": db_room["board"],
+            "created_at": db_room["created_at"],
+            "current_question": db_room.get("current_question"),
+            "selected_cell": db_room.get("selected_cell"),
+            "current_player_id": db_room.get("current_player_id")
+        }
+        rooms[room_code] = room_data
+        return room_data
+    
+    return None
+
 @api_router.post("/rooms/join", response_model=JoinRoomResponse)
 async def join_room(request: JoinRoomRequest):
     """Join an existing game room"""
