@@ -67,16 +67,19 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
         handleWebSocketMessage(message);
       };
 
-      ws.current.onclose = () => {
-        console.log('WebSocket disconnected');
+      ws.current.onclose = (event) => {
+        console.log('WebSocket disconnected:', event.code, event.reason);
         setConnectionStatus('disconnected');
         
-        if (reconnectAttempts.current < maxReconnectAttempts) {
+        // Only attempt reconnection if it wasn't a manual close
+        if (event.code !== 1000 && reconnectAttempts.current < maxReconnectAttempts) {
+          const delay = Math.min(1000 * Math.pow(2, reconnectAttempts.current), 10000);
           setTimeout(() => {
             reconnectAttempts.current++;
+            console.log(`Tentativa de reconexão ${reconnectAttempts.current}/${maxReconnectAttempts}`);
             connectWebSocket();
-          }, 2000 * reconnectAttempts.current);
-        } else {
+          }, delay);
+        } else if (reconnectAttempts.current >= maxReconnectAttempts) {
           toast({
             title: "Conexão perdida",
             description: "Não foi possível reconectar ao servidor",
