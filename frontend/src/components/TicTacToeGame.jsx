@@ -284,8 +284,23 @@ const TicTacToeGame = () => {
                     Empate!
                   </h3>
                   <p className="text-yellow-600">
-                    Tabuleiro completo, mas sem 3 acertos em linha.
+                    Tabuleiro completo, mas ninguém conseguiu 3 em linha.
                   </p>
+                </div>
+              )}
+
+              {lastAnswerInfo && (
+                <div className={`text-center p-3 rounded-lg mb-4 ${
+                  lastAnswerInfo.isCorrect ? 'bg-green-50 border-2 border-green-200' : 'bg-red-50 border-2 border-red-200'
+                }`}>
+                  <p className={`font-semibold ${lastAnswerInfo.isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+                    {lastAnswerInfo.message}
+                  </p>
+                  {!lastAnswerInfo.isCorrect && (
+                    <p className="text-red-600 text-sm mt-1">
+                      <strong>Resposta correta:</strong> {lastAnswerInfo.correctAnswer}
+                    </p>
+                  )}
                 </div>
               )}
 
