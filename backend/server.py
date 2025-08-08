@@ -315,7 +315,7 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
         if player_id in connections:
             del connections[player_id]
         
-        # Find and clean up room
+        # Find room and mark player as disconnected, but don't remove immediately
         for room_code, room in rooms.items():
             if player_id in room["players"]:
                 # Notify other players
@@ -324,15 +324,9 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                     "player_name": room["players"][player_id]
                 })
                 
-                # Remove player from room
-                del room["players"][player_id]
-                if player_id in room["player_symbols"]:
-                    del room["player_symbols"][player_id]
-                
-                # If room is empty, clean it up
-                if not room["players"]:
-                    del rooms[room_code]
-                    await db.game_rooms.delete_one({"_id": room_code})
+                # Don't remove player immediately - give time for reconnection
+                # Only remove if room has been empty for too long
+                # This will be handled by a cleanup task or timeout
                 break
 
 async def process_game_move(room_code: str, player_id: str, cell_index: int, selected_answer: str, question: Dict):
