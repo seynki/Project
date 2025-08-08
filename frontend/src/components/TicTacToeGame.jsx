@@ -187,6 +187,8 @@ const TicTacToeGame = () => {
     const cellValue = board[index];
     const cellColor = boardColors[index];
     const isSelected = selectedCell === index;
+    const canClick = gameStatus === 'playing' && !currentQuestion && 
+                    (cellValue === null || cellColor === 'red');
     
     let cellStyle = 'aspect-square rounded-lg border-2 transition-all duration-200 text-4xl font-bold flex items-center justify-center ';
     
@@ -199,17 +201,22 @@ const TicTacToeGame = () => {
         ? 'bg-green-100 border-green-500 text-green-700' 
         : 'bg-red-100 border-red-500 text-red-700';
     } else {
-      cellStyle += 'bg-white border-gray-300 hover:border-blue-400 hover:bg-blue-50';
+      cellStyle += 'bg-white border-gray-300';
+    }
+    
+    if (canClick) {
+      cellStyle += ' hover:border-blue-400 hover:bg-blue-50 cursor-pointer';
+    } else {
+      cellStyle += ' cursor-not-allowed opacity-60';
     }
     
     if (isSelected) {
       cellStyle += ' ring-4 ring-yellow-400 border-yellow-500';
     }
     
-    if (gameStatus !== 'playing' || cellValue !== null) {
-      cellStyle += ' cursor-not-allowed opacity-60';
-    } else {
-      cellStyle += ' cursor-pointer';
+    // Adiciona efeito pulsante para células vermelhas (conquist sáveis)
+    if (cellColor === 'red' && canClick) {
+      cellStyle += ' animate-pulse border-orange-400';
     }
     
     return (
@@ -217,7 +224,8 @@ const TicTacToeGame = () => {
         key={index}
         className={cellStyle}
         onClick={() => handleCellClick(index)}
-        disabled={gameStatus !== 'playing' || cellValue !== null}
+        disabled={!canClick}
+        title={cellColor === 'red' ? 'Célula conquistável! Clique para tentar tomar.' : ''}
       >
         {cellValue && (
           <span className="text-5xl font-bold">
