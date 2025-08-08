@@ -1,52 +1,50 @@
-import { useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+import TicTacToeGame from "./components/TicTacToeGame";
+import PlayerSetup from "./components/PlayerSetup";
+import { Toaster } from "./components/ui/toaster";
 
 function App() {
+  const [players, setPlayers] = useState(null);
+  const [gameKey, setGameKey] = useState(0); // Para forçar re-render do jogo
+
+  const handleStartGame = (playerNames) => {
+    setPlayers(playerNames);
+  };
+
+  const handleBackToSetup = () => {
+    setPlayers(null);
+    setGameKey(prev => prev + 1); // Força reset completo do jogo
+  };
+
+  const handleGameEnd = (winnerName, symbol) => {
+    // Aqui poderia salvar no backend
+    console.log(`Jogo terminou! Vencedor: ${winnerName} (${symbol})`);
+  };
+
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
+          <Route
+            path="/"
+            element={
+              !players ? (
+                <PlayerSetup onStartGame={handleStartGame} />
+              ) : (
+                <TicTacToeGame
+                  key={gameKey}
+                  players={players}
+                  onBackToSetup={handleBackToSetup}
+                  onGameEnd={handleGameEnd}
+                />
+              )
+            }
+          />
         </Routes>
       </BrowserRouter>
+      <Toaster />
     </div>
   );
 }
