@@ -270,10 +270,10 @@ const TicTacToeGame = () => {
                 <div className="text-center p-4 bg-green-100 rounded-lg mb-4">
                   <Trophy className="w-12 h-12 mx-auto text-yellow-600 mb-2" />
                   <h3 className="text-xl font-bold text-green-800">
-                    Parabéns! Você Venceu!
+                    Jogador {winner} Venceu!
                   </h3>
                   <p className="text-green-600">
-                    3 acertos em linha conquistados!
+                    Conseguiu 3 marcas em linha!
                   </p>
                 </div>
               )}
