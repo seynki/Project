@@ -331,10 +331,9 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
 
 async def process_game_move(room_code: str, player_id: str, cell_index: int, selected_answer: str, question: Dict):
     """Process a player's move and update game state"""
-    if room_code not in rooms:
+    room = await load_room_from_db(room_code)
+    if not room:
         return
-    
-    room = rooms[room_code]
     board = room["board"]
     
     # Check if answer is correct
