@@ -421,19 +421,19 @@ const TicTacToeGame = () => {
           <CardContent>
             <div className="grid md:grid-cols-3 gap-4 text-sm">
               <div className="text-center p-4 bg-green-50 rounded-lg">
-                <span className="text-3xl mb-2 block text-green-600 font-bold">X</span>
+                <span className="text-3xl mb-2 block text-green-600 font-bold">✓</span>
                 <h4 className="font-semibold text-green-800">Resposta Correta</h4>
-                <p className="text-green-600">Marca verde no tabuleiro</p>
+                <p className="text-green-600">Marca VERDE no tabuleiro</p>
               </div>
               <div className="text-center p-4 bg-red-50 rounded-lg">
-                <span className="text-3xl mb-2 block text-red-600 font-bold">O</span>
+                <span className="text-3xl mb-2 block text-red-600 font-bold">✗</span>
                 <h4 className="font-semibold text-red-800">Resposta Incorreta</h4>
-                <p className="text-red-600">Marca vermelha + resposta certa</p>
+                <p className="text-red-600">Marca VERMELHA - adversário pode conquistar!</p>
               </div>
               <div className="text-center p-4 bg-yellow-50 rounded-lg">
                 <Trophy className="w-8 h-8 mx-auto text-yellow-600 mb-2" />
-                <h4 className="font-semibold text-yellow-800">Objetivo</h4>
-                <p className="text-yellow-600">3 suas marcas em linha!</p>
+                <h4 className="font-semibold text-yellow-800">Vitória</h4>
+                <p className="text-yellow-600">3 marcas VERDES em linha!</p>
               </div>
             </div>
           </CardContent>
