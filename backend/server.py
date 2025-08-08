@@ -179,10 +179,10 @@ async def join_room(request: JoinRoomRequest):
     """Join an existing game room"""
     room_code = request.room_code.upper()
     
-    if room_code not in rooms:
+    # Load room from memory or database
+    room = await load_room_from_db(room_code)
+    if not room:
         raise HTTPException(status_code=404, detail="Sala não encontrada")
-    
-    room = rooms[room_code]
     
     if len(room["players"]) >= 2:
         raise HTTPException(status_code=400, detail="Sala está cheia")
