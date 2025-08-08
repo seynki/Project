@@ -28,10 +28,16 @@ const TicTacToeGame = () => {
     [0, 4, 8], [2, 4, 6] // diagonals
   ];
 
-  const checkWinner = (newBoard) => {
+  const checkWinner = (newBoard, newBoardColors) => {
     for (let line of winningLines) {
       const [a, b, c] = line;
-      if (newBoard[a] && newBoard[a] === newBoard[b] && newBoard[a] === newBoard[c]) {
+      // Precisa ter as 3 posições preenchidas pelo mesmo jogador E todas verdes (acertos)
+      if (newBoard[a] && 
+          newBoard[a] === newBoard[b] && 
+          newBoard[a] === newBoard[c] &&
+          newBoardColors[a] === 'green' &&
+          newBoardColors[b] === 'green' &&
+          newBoardColors[c] === 'green') {
         return newBoard[a]; // Return 'X' or 'O'
       }
     }
