@@ -248,12 +248,23 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
   }, []);
 
   const handleCellClick = (index) => {
-    if (!isMyTurn || currentQuestion || gameState.gameStatus !== 'playing') {
+    if (!isMyTurn || currentQuestion || gameState.gameStatus !== 'playing' || connectionStatus !== 'connected') {
       return;
     }
 
     // Can click if empty or red (error that can be conquered)
     if (gameState.board[index] !== null && gameState.boardColors[index] !== 'red') {
+      return;
+    }
+
+    // Check WebSocket connection before sending
+    if (!ws.current || ws.current.readyState !== WebSocket.OPEN) {
+      toast({
+        title: "Sem conexão",
+        description: "Aguarde a reconexão para jogar",
+        variant: "destructive",
+        duration: 2000
+      });
       return;
     }
 
