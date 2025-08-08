@@ -5,7 +5,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Users, Trophy, Play } from 'lucide-react';
 
-const PlayerSetup = ({ onStartGame }) => {
+const PlayerSetup = ({ onStartGame, onBackToMenu }) => {
   const [player1Name, setPlayer1Name] = useState('');
   const [player2Name, setPlayer2Name] = useState('');
 
