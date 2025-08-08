@@ -240,9 +240,17 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
   useEffect(() => {
     connectWebSocket();
     
+    // Add heartbeat to keep connection alive
+    const heartbeatInterval = setInterval(() => {
+      if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+        ws.current.send(JSON.stringify({ type: 'ping' }));
+      }
+    }, 30000); // Send ping every 30 seconds
+    
     return () => {
+      clearInterval(heartbeatInterval);
       if (ws.current) {
-        ws.current.close();
+        ws.current.close(1000, 'Component unmounted'); // Clean close
       }
     };
   }, []);
