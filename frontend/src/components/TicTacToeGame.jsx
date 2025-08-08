@@ -53,7 +53,12 @@ const TicTacToeGame = () => {
   };
 
   const handleCellClick = (index) => {
-    if (board[index] !== null || gameStatus !== 'playing' || currentQuestion) {
+    if (gameStatus !== 'playing' || currentQuestion) {
+      return;
+    }
+
+    // Permite clicar se estiver vazio OU se for uma marca vermelha (erro)
+    if (board[index] !== null && boardColors[index] !== 'red') {
       return;
     }
 
