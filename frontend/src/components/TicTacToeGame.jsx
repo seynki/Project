@@ -32,9 +32,7 @@ const TicTacToeGame = () => {
     for (let line of winningLines) {
       const [a, b, c] = line;
       if (newBoard[a] && newBoard[a] === newBoard[b] && newBoard[a] === newBoard[c]) {
-        if (newBoard[a] === 'X') {
-          return 'X';
-        }
+        return newBoard[a]; // Return 'X' or 'O'
       }
     }
     return null;
