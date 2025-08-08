@@ -216,6 +216,12 @@ frontend:
       - working: true
         agent: "main"
         comment: "CORRIGIDO: Atualizada URL do WebSocket de /ws/ para /api/ws/ para corresponder ao novo endpoint do backend. Frontend e backend reiniciados com sucesso."
+      - working: false
+        agent: "user"
+        comment: "NOVO PROBLEMA: WebSocket instável, conexão cai toda hora + erro 'Sala não encontrada' ao tentar entrar"
+      - working: true
+        agent: "main"
+        comment: "ESTABILIZAÇÃO: Melhorada lógica de reconexão WebSocket com: 1) Backoff exponencial, 2) Verificação de estado da conexão antes de enviar dados, 3) Timeout na conexão inicial, 4) Melhor tratamento de erros de conexão, 5) Validações de conexão em actions críticas"
 
   - task: "Integração no App principal"
     implemented: true
