@@ -8,14 +8,19 @@ import { mockQuestions } from '../data/mock';
 
 const TicTacToeGame = () => {
   const [board, setBoard] = useState(Array(9).fill(null));
+  const [boardColors, setBoardColors] = useState(Array(9).fill(null)); // 'green' or 'red'
   const [currentPlayer, setCurrentPlayer] = useState('X');
   const [gameStatus, setGameStatus] = useState('playing'); // playing, won, draw
   const [winner, setWinner] = useState(null);
-  const [score, setScore] = useState({ correct: 0, incorrect: 0 });
+  const [score, setScore] = useState({ 
+    playerX: { correct: 0, incorrect: 0 }, 
+    playerO: { correct: 0, incorrect: 0 } 
+  });
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [selectedCell, setSelectedCell] = useState(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [usedQuestions, setUsedQuestions] = useState([]);
+  const [lastAnswerInfo, setLastAnswerInfo] = useState(null);
 
   const winningLines = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
