@@ -11,7 +11,7 @@ import sys
 from typing import Dict, Any
 
 # Get backend URL from environment
-BACKEND_URL = "https://51ca6bae-4778-4223-87e8-3301ebe2bb15.preview.emergentagent.com/api"
+BACKEND_URL = "https://abe35cdd-ad12-473c-b128-5204cba79b2b.preview.emergentagent.com/api"
 
 class TicTacToeAPITester:
     def __init__(self):
