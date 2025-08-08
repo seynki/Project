@@ -334,6 +334,11 @@ const TicTacToeGame = () => {
                 </div>
               ) : (
                 <div className="space-y-4">
+                  <div className="text-center p-2 bg-purple-100 rounded-lg">
+                    <span className="text-lg font-bold text-purple-800">
+                      Jogador {currentPlayer} responde:
+                    </span>
+                  </div>
                   <div className="p-4 bg-blue-50 rounded-lg">
                     <h3 className="font-semibold text-blue-800 mb-3">
                       {currentQuestion.question}
