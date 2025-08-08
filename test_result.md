@@ -111,11 +111,14 @@ backend:
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Implementado sistema completo de salas com códigos únicos, WebSocket para comunicação em tempo real, gerenciamento de estado do jogo no servidor"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Sistema de salas funcionando perfeitamente. Códigos únicos de 6 caracteres alfanuméricos gerados corretamente, WebSocket endpoint configurado em /ws/{player_id}, gerenciamento completo de estado do jogo, broadcast para jogadores na sala, limpeza automática de salas vazias."
 
   - task: "API para criar e entrar em salas"
     implemented: true
@@ -123,11 +126,14 @@ backend:
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Criados endpoints /api/rooms/create e /api/rooms/join com validação completa e códigos únicos de 6 caracteres"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Todas as APIs REST funcionando corretamente. POST /api/rooms/create cria salas com códigos únicos, POST /api/rooms/join permite entrada com validações (sala inexistente=404, sala cheia=400), GET /api/rooms/{code}/status retorna status completo. Primeiro jogador sempre 'X', segundo 'O'. Status muda de 'waiting' para 'playing' com 2 jogadores."
 
   - task: "Base de perguntas históricas"
     implemented: true
@@ -135,11 +141,14 @@ backend:
     file: "/app/backend/questions.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "20 perguntas sobre História do Brasil implementadas com sistema anti-repetição"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Sistema de perguntas funcionando perfeitamente. Base com 20 perguntas sobre História do Brasil, estrutura correta (id, question, options, correctAnswer, period), sistema anti-repetição implementado, função get_random_question() retorna perguntas válidas com 4 opções cada."
 
   - task: "Dependências WebSocket"
     implemented: true
