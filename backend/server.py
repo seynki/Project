@@ -257,8 +257,11 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
     connections[player_id] = websocket
     
     try:
+        # Send initial ping to confirm connection
+        await safe_send_json(websocket, {"type": "connected", "player_id": player_id})
+        
         while True:
-            # Receive message from client
+            # Receive message from client with timeout
             data = await websocket.receive_text()
             message = json.loads(data)
             
