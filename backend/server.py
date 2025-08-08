@@ -114,7 +114,7 @@ async def broadcast_to_room(room_code: str, message: Dict):
     for player_id in room["players"]:
         if player_id in connections:
             try:
-                await connections[player_id].send_text(json.dumps(message))
+                await safe_send_json(connections[player_id], message)
             except:
                 # Connection is dead, remove it
                 if player_id in connections:
