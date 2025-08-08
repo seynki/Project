@@ -163,24 +163,45 @@ const TicTacToeGame = () => {
 
   const renderCell = (index) => {
     const cellValue = board[index];
+    const cellColor = boardColors[index];
     const isSelected = selectedCell === index;
+    
+    let cellStyle = 'aspect-square rounded-lg border-2 transition-all duration-200 text-4xl font-bold flex items-center justify-center ';
+    
+    if (cellValue === 'X') {
+      cellStyle += cellColor === 'green' 
+        ? 'bg-green-100 border-green-500 text-green-700' 
+        : 'bg-red-100 border-red-500 text-red-700';
+    } else if (cellValue === 'O') {
+      cellStyle += cellColor === 'green' 
+        ? 'bg-green-100 border-green-500 text-green-700' 
+        : 'bg-red-100 border-red-500 text-red-700';
+    } else {
+      cellStyle += 'bg-white border-gray-300 hover:border-blue-400 hover:bg-blue-50';
+    }
+    
+    if (isSelected) {
+      cellStyle += ' ring-4 ring-yellow-400 border-yellow-500';
+    }
+    
+    if (gameStatus !== 'playing' || cellValue !== null) {
+      cellStyle += ' cursor-not-allowed opacity-60';
+    } else {
+      cellStyle += ' cursor-pointer';
+    }
     
     return (
       <button
         key={index}
-        className={`
-          aspect-square rounded-lg border-2 transition-all duration-200 text-4xl font-bold
-          ${cellValue === 'X' ? 'bg-green-100 border-green-500 text-green-700' : ''}
-          ${cellValue === 'O' ? 'bg-red-100 border-red-500 text-red-700' : ''}
-          ${cellValue === null ? 'bg-white border-gray-300 hover:border-blue-400 hover:bg-blue-50' : ''}
-          ${isSelected ? 'ring-4 ring-yellow-400 border-yellow-500' : ''}
-          ${gameStatus !== 'playing' ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}
-        `}
+        className={cellStyle}
         onClick={() => handleCellClick(index)}
         disabled={gameStatus !== 'playing' || cellValue !== null}
       >
-        {cellValue === 'X' && <CheckCircle className="w-12 h-12 mx-auto text-green-600" />}
-        {cellValue === 'O' && <XCircle className="w-12 h-12 mx-auto text-red-600" />}
+        {cellValue && (
+          <span className="text-5xl font-bold">
+            {cellValue}
+          </span>
+        )}
       </button>
     );
   };
