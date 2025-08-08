@@ -203,7 +203,7 @@ async def get_room_status(room_code: str):
 # Include the router in the main app
 app.include_router(api_router)
 
-@api_router.websocket("/ws/{player_id}")
+@app.websocket("/api/ws/{player_id}")
 async def websocket_endpoint(websocket: WebSocket, player_id: str):
     """WebSocket endpoint for real-time game communication"""
     await websocket.accept()
