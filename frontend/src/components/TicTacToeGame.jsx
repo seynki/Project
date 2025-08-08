@@ -233,12 +233,32 @@ const TicTacToeGame = () => {
                 Tabuleiro
               </CardTitle>
               <div className="flex justify-center gap-4 mt-2">
-                <Badge variant="outline" className="bg-green-100 text-green-800">
-                  ✓ Acertos: {score.correct}
-                </Badge>
-                <Badge variant="outline" className="bg-red-100 text-red-800">
-                  ✗ Erros: {score.incorrect}
-                </Badge>
+                <div className="text-center">
+                  <Badge variant="outline" className="bg-purple-100 text-purple-800 mb-1">
+                    Jogador X
+                  </Badge>
+                  <div className="text-sm">
+                    <Badge variant="outline" className="bg-green-100 text-green-800 mr-1">
+                      ✓ {score.playerX.correct}
+                    </Badge>
+                    <Badge variant="outline" className="bg-red-100 text-red-800">
+                      ✗ {score.playerX.incorrect}
+                    </Badge>
+                  </div>
+                </div>
+                <div className="text-center">
+                  <Badge variant="outline" className="bg-orange-100 text-orange-800 mb-1">
+                    Jogador O
+                  </Badge>
+                  <div className="text-sm">
+                    <Badge variant="outline" className="bg-green-100 text-green-800 mr-1">
+                      ✓ {score.playerO.correct}
+                    </Badge>
+                    <Badge variant="outline" className="bg-red-100 text-red-800">
+                      ✗ {score.playerO.incorrect}
+                    </Badge>
+                  </div>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
