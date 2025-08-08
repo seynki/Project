@@ -125,6 +125,12 @@ backend:
       - working: true
         agent: "main"
         comment: "CORRIGIDO: Movido endpoint WebSocket de /ws/{player_id} para /api/ws/{player_id} para resolver problema de roteamento do Kubernetes Ingress. APIs HTTP funcionavam mas WebSocket não estava no prefixo /api correto. Testado com wscat - WebSocket conecta corretamente agora."
+      - working: false
+        agent: "user"  
+        comment: "NOVO PROBLEMA: WebSocket instável caindo toda hora + salas não encontradas ao tentar entrar (sempre 404)"
+      - working: true
+        agent: "main"
+        comment: "MELHORIAS IMPLEMENTADAS: 1) Adicionada função load_room_from_db() para persistir salas no banco, 2) Melhorada lógica de reconexão no frontend com backoff exponencial, 3) Removida limpeza agressiva de salas - salas persistem em caso de desconexão temporária, 4) Melhorada validação de conexão WebSocket antes de enviar mensagens"
 
   - task: "API para criar e entrar em salas"
     implemented: true
