@@ -37,7 +37,7 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
         ws.current.close();
       }
 
-      ws.current = new WebSocket(`${wsUrl}/ws/${roomData.player_id}`);
+      ws.current = new WebSocket(`${wsUrl}/api/ws/${roomData.player_id}`);
       
       ws.current.onopen = () => {
         console.log('WebSocket connected');
