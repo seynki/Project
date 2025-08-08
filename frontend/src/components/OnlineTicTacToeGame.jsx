@@ -37,6 +37,7 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
         ws.current.close();
       }
 
+      setConnectionStatus('connecting');
       ws.current = new WebSocket(`${wsUrl}/api/ws/${roomData.player_id}`);
       
       ws.current.onopen = () => {
@@ -44,11 +45,15 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
         setConnectionStatus('connected');
         reconnectAttempts.current = 0;
         
-        // Join room
-        ws.current.send(JSON.stringify({
-          type: 'join_room',
-          room_code: roomData.room_code
-        }));
+        // Join room after connection is established
+        setTimeout(() => {
+          if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+            ws.current.send(JSON.stringify({
+              type: 'join_room',
+              room_code: roomData.room_code
+            }));
+          }
+        }, 100);
 
         toast({
           title: "Conectado!",
