@@ -245,8 +245,8 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
             
             if message_type == "join_room":
                 # Player joined a room, send initial state
-                if room_code in rooms:
-                    room = rooms[room_code]
+                room = await load_room_from_db(room_code)
+                if room:
                     await websocket.send_text(json.dumps({
                         "type": "room_state",
                         "room": room
@@ -258,6 +258,11 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                         "player_name": room["players"].get(player_id, "Unknown"),
                         "player_count": len(room["players"])
                     })
+                else:
+                    await websocket.send_text(json.dumps({
+                        "type": "error",
+                        "message": "Sala não encontrada"
+                    }))
             
             elif message_type == "make_move":
                 # Player makes a move
