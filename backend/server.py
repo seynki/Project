@@ -265,7 +265,12 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
             message_type = message.get("type")
             room_code = message.get("room_code")
             
-            if message_type == "join_room":
+            if message_type == "ping":
+                # Heartbeat ping - respond with pong
+                await safe_send_json(websocket, {"type": "pong"})
+                continue
+            
+            elif message_type == "join_room":
                 # Player joined a room, send initial state
                 room = await load_room_from_db(room_code)
                 if room:
