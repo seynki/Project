@@ -262,3 +262,103 @@ export const mockQuestions = [
     explanation: "A Revolução de 1930, liderada por Getúlio Vargas, marcou o fim da Primeira República."
   }
 ];
+
+// Mock data for global ranking
+export const mockRanking = [
+  {
+    id: 1,
+    name: "Carlos Silva",
+    points: 47,
+    games: 52,
+    wins: 47,
+    winRate: 90
+  },
+  {
+    id: 2,
+    name: "Ana Santos",
+    points: 43,
+    games: 48,
+    wins: 43,
+    winRate: 90
+  },
+  {
+    id: 3,
+    name: "Pedro Lima",
+    points: 38,
+    games: 45,
+    wins: 38,
+    winRate: 84
+  },
+  {
+    id: 4,
+    name: "Maria Oliveira",
+    points: 34,
+    games: 41,
+    wins: 34,
+    winRate: 83
+  },
+  {
+    id: 5,
+    name: "João Costa",
+    points: 31,
+    games: 38,
+    wins: 31,
+    winRate: 82
+  },
+  {
+    id: 6,
+    name: "Laura Ferreira",
+    points: 28,
+    games: 35,
+    wins: 28,
+    winRate: 80
+  },
+  {
+    id: 7,
+    name: "Rafael Moura",
+    points: 25,
+    games: 33,
+    wins: 25,
+    winRate: 76
+  },
+  {
+    id: 8,
+    name: "Beatriz Alves",
+    points: 22,
+    games: 30,
+    wins: 22,
+    winRate: 73
+  },
+  {
+    id: 9,
+    name: "Lucas Rodrigues",
+    points: 19,
+    games: 27,
+    wins: 19,
+    winRate: 70
+  },
+  {
+    id: 10,
+    name: "Camila Souza",
+    points: 16,
+    games: 24,
+    wins: 16,
+    winRate: 67
+  },
+  {
+    id: 11,
+    name: "Thiago Pereira",
+    points: 14,
+    games: 22,
+    wins: 14,
+    winRate: 64
+  },
+  {
+    id: 12,
+    name: "Juliana Martins",
+    points: 12,
+    games: 19,
+    wins: 12,
+    winRate: 63
+  }
+];
