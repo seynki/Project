@@ -141,17 +141,22 @@ const TicTacToeGame = () => {
 
   const resetGame = () => {
     setBoard(Array(9).fill(null));
+    setBoardColors(Array(9).fill(null));
     setCurrentPlayer('X');
     setGameStatus('playing');
     setWinner(null);
-    setScore({ correct: 0, incorrect: 0 });
+    setScore({ 
+      playerX: { correct: 0, incorrect: 0 }, 
+      playerO: { correct: 0, incorrect: 0 } 
+    });
     setCurrentQuestion(null);
     setSelectedCell(null);
     setShowAnswer(false);
     setUsedQuestions([]);
+    setLastAnswerInfo(null);
     toast({
       title: "Novo Jogo Iniciado!",
-      description: "Boa sorte com as perguntas sobre História do Brasil!",
+      description: "Jogador X começa! Boa sorte com as perguntas sobre História do Brasil!",
       duration: 2000,
     });
   };
