@@ -101,3 +101,136 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "modo online teria um botão para criar sala e entrar em criar sala geraria um codigo onde quem quiser jogar precisa desse codigo assim jogando a distancia simultaneamente"
+
+backend:
+  - task: "Sistema de salas online com WebSocket"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Implementado sistema completo de salas com códigos únicos, WebSocket para comunicação em tempo real, gerenciamento de estado do jogo no servidor"
+
+  - task: "API para criar e entrar em salas"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Criados endpoints /api/rooms/create e /api/rooms/join com validação completa e códigos únicos de 6 caracteres"
+
+  - task: "Base de perguntas históricas"
+    implemented: true
+    working: true
+    file: "/app/backend/questions.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "20 perguntas sobre História do Brasil implementadas com sistema anti-repetição"
+
+  - task: "Dependências WebSocket"
+    implemented: true
+    working: true
+    file: "/app/backend/requirements.txt"
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Adicionado websockets>=12.0 nas dependências e instalado com sucesso"
+
+frontend:
+  - task: "Seletor de modo de jogo (Local vs Online)"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/GameModeSelector.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Interface completa para escolher entre jogo local e online com design responsivo"
+
+  - task: "Interface de criação e entrada em salas"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/OnlineGameSetup.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Componente completo com criação de sala (gera código), entrada em sala (input código), validações e feedback visual"
+
+  - task: "Jogo online com WebSocket"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/OnlineTicTacToeGame.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Jogo completo em tempo real com WebSocket, sincronização de estado, indicadores de turno, conexão/desconexão automática"
+
+  - task: "Integração no App principal"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Roteamento completo entre modos de jogo, gerenciamento de estado global da aplicação"
+
+  - task: "Atualização PlayerSetup com navegação"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/PlayerSetup.jsx"
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Adicionado botão de voltar aos modos e melhorias na interface"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Sistema de salas online com WebSocket"
+    - "API para criar e entrar em salas"
+    - "Seletor de modo de jogo (Local vs Online)"
+    - "Interface de criação e entrada em salas"
+    - "Jogo online com WebSocket"
+  stuck_tasks: []
+  test_all: true
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Implementado sistema completo de jogo online com salas e códigos únicos. Recursos principais: 1) Seleção de modo (Local/Online), 2) Criação de sala com código de 6 caracteres, 3) Entrada em sala usando código, 4) Jogo em tempo real via WebSocket, 5) Sincronização completa de estado entre jogadores. Backend usa FastAPI+WebSocket, Frontend usa WebSocket nativo. Sistema pronto para testes."
