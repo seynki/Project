@@ -62,26 +62,54 @@ const TicTacToeGame = () => {
 
     const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
     const newBoard = [...board];
+    const newBoardColors = [...boardColors];
+    
+    // Marca a célula com a letra do jogador atual
+    newBoard[selectedCell] = currentPlayer;
     
     if (isCorrect) {
-      newBoard[selectedCell] = 'X';
-      setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
+      newBoardColors[selectedCell] = 'green';
+      setScore(prev => ({
+        ...prev,
+        [currentPlayer === 'X' ? 'playerX' : 'playerO']: {
+          ...prev[currentPlayer === 'X' ? 'playerX' : 'playerO'],
+          correct: prev[currentPlayer === 'X' ? 'playerX' : 'playerO'].correct + 1
+        }
+      }));
+      setLastAnswerInfo({
+        isCorrect: true,
+        player: currentPlayer,
+        message: `Jogador ${currentPlayer} acertou! ✅`
+      });
       toast({
-        title: "Resposta Correta! ✅",
-        description: "Você marcou um X no tabuleiro!",
+        title: `Jogador ${currentPlayer} Acertou! ✅`,
+        description: "Resposta correta! Sua marca foi colocada no tabuleiro.",
         duration: 2000,
       });
     } else {
-      newBoard[selectedCell] = 'O';
-      setScore(prev => ({ ...prev, incorrect: prev.incorrect + 1 }));
+      newBoardColors[selectedCell] = 'red';
+      setScore(prev => ({
+        ...prev,
+        [currentPlayer === 'X' ? 'playerX' : 'playerO']: {
+          ...prev[currentPlayer === 'X' ? 'playerX' : 'playerO'],
+          incorrect: prev[currentPlayer === 'X' ? 'playerX' : 'playerO'].incorrect + 1
+        }
+      }));
+      setLastAnswerInfo({
+        isCorrect: false,
+        player: currentPlayer,
+        message: `Jogador ${currentPlayer} errou! ❌`,
+        correctAnswer: currentQuestion.correctAnswer
+      });
       toast({
-        title: "Resposta Incorreta ❌", 
+        title: `Jogador ${currentPlayer} Errou ❌`, 
         description: `A resposta correta era: ${currentQuestion.correctAnswer}`,
-        duration: 3000,
+        duration: 4000,
       });
     }
 
     setBoard(newBoard);
+    setBoardColors(newBoardColors);
     setUsedQuestions(prev => [...prev, currentQuestion.id]);
 
     // Check for winner
@@ -90,12 +118,20 @@ const TicTacToeGame = () => {
       setWinner(gameWinner);
       setGameStatus('won');
       toast({
-        title: "🎉 Parabéns!",
-        description: "Você conseguiu 3 acertos em linha e venceu o jogo!",
+        title: `🎉 Jogador ${gameWinner} Venceu!`,
+        description: "Conseguiu 3 marcas em linha e ganhou o jogo!",
         duration: 5000,
       });
     } else if (newBoard.every(cell => cell !== null)) {
       setGameStatus('draw');
+      toast({
+        title: "Empate!",
+        description: "Tabuleiro completo, mas ninguém conseguiu 3 em linha.",
+        duration: 3000,
+      });
+    } else {
+      // Alterna para o próximo jogador
+      setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
     }
 
     setCurrentQuestion(null);
