@@ -203,6 +203,193 @@ async def get_room_status(room_code: str):
 # Include the router in the main app
 app.include_router(api_router)
 
+@app.websocket("/ws/{player_id}")
+async def websocket_endpoint(websocket: WebSocket, player_id: str):
+    """WebSocket endpoint for real-time game communication"""
+    await websocket.accept()
+    connections[player_id] = websocket
+    
+    try:
+        while True:
+            # Receive message from client
+            data = await websocket.receive_text()
+            message = json.loads(data)
+            
+            message_type = message.get("type")
+            room_code = message.get("room_code")
+            
+            if message_type == "join_room":
+                # Player joined a room, send initial state
+                if room_code in rooms:
+                    room = rooms[room_code]
+                    await websocket.send_text(json.dumps({
+                        "type": "room_state",
+                        "room": room
+                    }))
+                    
+                    # Notify other players
+                    await broadcast_to_room(room_code, {
+                        "type": "player_joined",
+                        "player_name": room["players"].get(player_id, "Unknown"),
+                        "player_count": len(room["players"])
+                    })
+            
+            elif message_type == "make_move":
+                # Player makes a move
+                cell_index = message.get("cell_index")
+                selected_answer = message.get("selected_answer")
+                question = message.get("question")
+                
+                if room_code in rooms:
+                    room = rooms[room_code]
+                    
+                    # Validate it's the player's turn
+                    if room["current_player_id"] != player_id:
+                        await websocket.send_text(json.dumps({
+                            "type": "error",
+                            "message": "Não é sua vez!"
+                        }))
+                        continue
+                    
+                    # Process the move
+                    await process_game_move(room_code, player_id, cell_index, selected_answer, question)
+            
+            elif message_type == "get_question":
+                # Client requests a question for a cell
+                cell_index = message.get("cell_index")
+                
+                if room_code in rooms:
+                    room = rooms[room_code]
+                    
+                    # Set current question and selected cell
+                    from .questions import get_random_question
+                    question = get_random_question()
+                    
+                    room["current_question"] = question
+                    room["selected_cell"] = cell_index
+                    
+                    # Send question to the current player
+                    await websocket.send_text(json.dumps({
+                        "type": "question",
+                        "question": question,
+                        "cell_index": cell_index
+                    }))
+                    
+                    # Notify other player that someone is answering
+                    await broadcast_to_room(room_code, {
+                        "type": "player_answering",
+                        "player_name": room["players"][player_id],
+                        "cell_index": cell_index
+                    })
+    
+    except WebSocketDisconnect:
+        # Handle disconnection
+        if player_id in connections:
+            del connections[player_id]
+        
+        # Find and clean up room
+        for room_code, room in rooms.items():
+            if player_id in room["players"]:
+                # Notify other players
+                await broadcast_to_room(room_code, {
+                    "type": "player_disconnected",
+                    "player_name": room["players"][player_id]
+                })
+                
+                # Remove player from room
+                del room["players"][player_id]
+                if player_id in room["player_symbols"]:
+                    del room["player_symbols"][player_id]
+                
+                # If room is empty, clean it up
+                if not room["players"]:
+                    del rooms[room_code]
+                    await db.game_rooms.delete_one({"_id": room_code})
+                break
+
+async def process_game_move(room_code: str, player_id: str, cell_index: int, selected_answer: str, question: Dict):
+    """Process a player's move and update game state"""
+    if room_code not in rooms:
+        return
+    
+    room = rooms[room_code]
+    board = room["board"]
+    
+    # Check if answer is correct
+    is_correct = selected_answer == question["correctAnswer"]
+    
+    # Update board
+    player_symbol = room["player_symbols"][player_id]
+    board["board"][cell_index] = player_symbol
+    board["board_colors"][cell_index] = "green" if is_correct else "red"
+    
+    # Check for winner
+    winner_symbol = check_winner(board["board"], board["board_colors"])
+    if winner_symbol:
+        board["game_status"] = "won"
+        board["winner"] = winner_symbol
+        
+        # Find winner player
+        winner_player_id = None
+        for pid, symbol in room["player_symbols"].items():
+            if symbol == winner_symbol:
+                winner_player_id = pid
+                break
+    elif all(cell is not None for cell in board["board"]):
+        board["game_status"] = "draw"
+    else:
+        # Switch turns
+        current_symbol = room["player_symbols"][player_id]
+        next_symbol = "O" if current_symbol == "X" else "X"
+        board["current_player"] = next_symbol
+        
+        # Find next player
+        for pid, symbol in room["player_symbols"].items():
+            if symbol == next_symbol:
+                room["current_player_id"] = pid
+                break
+    
+    # Clear current question
+    room["current_question"] = None
+    room["selected_cell"] = None
+    
+    # Update database
+    await db.game_rooms.update_one(
+        {"_id": room_code},
+        {"$set": {"board": board}}
+    )
+    
+    # Broadcast updated game state
+    await broadcast_to_room(room_code, {
+        "type": "game_update",
+        "room": room,
+        "move": {
+            "player_id": player_id,
+            "player_name": room["players"][player_id],
+            "cell_index": cell_index,
+            "is_correct": is_correct,
+            "answer": selected_answer,
+            "correct_answer": question["correctAnswer"]
+        }
+    })
+
+def check_winner(board: List[Optional[str]], board_colors: List[Optional[str]]) -> Optional[str]:
+    """Check if there's a winner on the board"""
+    winning_lines = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],  # rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],  # columns
+        [0, 4, 8], [2, 4, 6]  # diagonals
+    ]
+    
+    for line in winning_lines:
+        a, b, c = line
+        if (board[a] and 
+            board[a] == board[b] == board[c] and
+            board_colors[a] == board_colors[b] == board_colors[c] == "green"):
+            return board[a]
+    
+    return None
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
