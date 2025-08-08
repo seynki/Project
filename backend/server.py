@@ -262,7 +262,7 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                     room = rooms[room_code]
                     
                     # Set current question and selected cell
-                    from .questions import get_random_question
+                    from questions import get_random_question
                     question = get_random_question()
                     
                     room["current_question"] = question
