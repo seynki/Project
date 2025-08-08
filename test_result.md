@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "modo online teria um botão para criar sala e entrar em criar sala geraria um codigo onde quem quiser jogar precisa desse codigo assim jogando a distancia simultaneamente"
+user_problem_statement: "modo online teria um botão para criar sala e entrar em criar sala geraria um codigo onde quem quiser jogar precisa desse codigo assim jogando a distancia simultaneamente. PROBLEMA RELATADO: quando entro no modo online tem o botão de criar a sala e entrar na sala quando alguem cria gera um codigo onde quem quer entrar na mesma sala coloca esse codigo porem aparece que não e possivel conectar no servidor e mostra que ninguem esta conectado"
 
 backend:
   - task: "Sistema de salas online com WebSocket"
