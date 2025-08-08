@@ -1,52 +1,98 @@
-import { useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import TicTacToeGame from "./components/TicTacToeGame";
+import PlayerSetup from "./components/PlayerSetup";
+import GameModeSelector from "./components/GameModeSelector";
+import OnlineGameSetup from "./components/OnlineGameSetup";
+import OnlineTicTacToeGame from "./components/OnlineTicTacToeGame";
+import { Toaster } from "./components/ui/toaster";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+function App() {
+  const [gameMode, setGameMode] = useState('menu'); // 'menu', 'local', 'online'
+  const [players, setPlayers] = useState(null);
+  const [gameKey, setGameKey] = useState(0);
+  const [onlineGameData, setOnlineGameData] = useState(null);
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
+  const handleSelectMode = (mode) => {
+    setGameMode(mode);
+    setPlayers(null);
+    setOnlineGameData(null);
+  };
+
+  const handleStartLocalGame = (playerNames) => {
+    setPlayers(playerNames);
+  };
+
+  const handleStartOnlineGame = (gameData) => {
+    setOnlineGameData(gameData);
+  };
+
+  const handleBackToSetup = () => {
+    if (gameMode === 'local') {
+      setPlayers(null);
+      setGameKey(prev => prev + 1);
+    } else if (gameMode === 'online') {
+      setOnlineGameData(null);
     }
   };
 
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
+  const handleBackToMenu = () => {
+    setGameMode('menu');
+    setPlayers(null);
+    setOnlineGameData(null);
+    setGameKey(prev => prev + 1);
+  };
 
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+  const handleGameEnd = (winnerName, symbol) => {
+    console.log(`Jogo terminou! Vencedor: ${winnerName} (${symbol})`);
+  };
 
-function App() {
+  const renderContent = () => {
+    // Game Mode Selection
+    if (gameMode === 'menu') {
+      return <GameModeSelector onSelectMode={handleSelectMode} />;
+    }
+
+    // Local Mode
+    if (gameMode === 'local') {
+      if (!players) {
+        return <PlayerSetup onStartGame={handleStartLocalGame} onBackToMenu={handleBackToMenu} />;
+      }
+      return (
+        <TicTacToeGame
+          key={gameKey}
+          players={players}
+          onBackToSetup={handleBackToSetup}
+          onGameEnd={handleGameEnd}
+        />
+      );
+    }
+
+    // Online Mode
+    if (gameMode === 'online') {
+      if (!onlineGameData) {
+        return <OnlineGameSetup onStartGame={handleStartOnlineGame} onBackToMenu={handleBackToMenu} />;
+      }
+      return (
+        <OnlineTicTacToeGame
+          gameData={onlineGameData}
+          onBackToSetup={handleBackToSetup}
+        />
+      );
+    }
+
+    return <GameModeSelector onSelectMode={handleSelectMode} />;
+  };
+
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
+          <Route path="/" element={renderContent()} />
         </Routes>
       </BrowserRouter>
+      <Toaster />
     </div>
   );
 }
