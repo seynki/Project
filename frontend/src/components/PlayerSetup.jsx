@@ -84,6 +84,15 @@ const PlayerSetup = ({ onStartGame, onBackToMenu }) => {
             Começar Jogo
           </Button>
 
+          {/* Back to Menu Button */}
+          <Button
+            onClick={onBackToMenu}
+            variant="outline"
+            className="w-full text-lg py-3"
+          >
+            Voltar ao Menu
+          </Button>
+
           {/* Info */}
           <div className="text-center p-4 bg-blue-50 rounded-lg">
             <Trophy className="w-8 h-8 mx-auto text-yellow-600 mb-2" />
