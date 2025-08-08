@@ -326,10 +326,20 @@ const TicTacToeGame = () => {
                   <p className={`font-semibold ${lastAnswerInfo.isCorrect ? 'text-green-800' : 'text-red-800'}`}>
                     {lastAnswerInfo.message}
                   </p>
-                  {!lastAnswerInfo.isCorrect && (
-                    <p className="text-red-600 text-sm mt-1">
-                      <strong>Resposta correta:</strong> {lastAnswerInfo.correctAnswer}
+                  {lastAnswerInfo.conquered && (
+                    <p className="text-orange-600 text-sm mt-1 font-semibold">
+                      🎯 Célula conquistada do adversário!
                     </p>
+                  )}
+                  {!lastAnswerInfo.isCorrect && (
+                    <div className="mt-2">
+                      <p className="text-red-600 text-sm">
+                        <strong>Resposta correta:</strong> {lastAnswerInfo.correctAnswer}
+                      </p>
+                      <p className="text-orange-600 text-xs mt-1">
+                        ⚠️ Esta célula pode ser conquistada pelo adversário!
+                      </p>
+                    </div>
                   )}
                 </div>
               )}
