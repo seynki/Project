@@ -197,13 +197,19 @@ frontend:
     implemented: true
     working: true
     file: "/app/frontend/src/components/OnlineTicTacToeGame.jsx"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: true
     status_history:
       - working: true
         agent: "main"
         comment: "Jogo completo em tempo real com WebSocket, sincronização de estado, indicadores de turno, conexão/desconexão automática"
+      - working: false
+        agent: "user"
+        comment: "PROBLEMA REPORTADO: WebSocket não conecta, mostra 'Status da Conexão: Desconectado' e '0/2 conectados'"
+      - working: true
+        agent: "main"
+        comment: "CORRIGIDO: Atualizada URL do WebSocket de /ws/ para /api/ws/ para corresponder ao novo endpoint do backend. Frontend e backend reiniciados com sucesso."
 
   - task: "Integração no App principal"
     implemented: true
