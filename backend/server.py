@@ -269,10 +269,10 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                 # Player joined a room, send initial state
                 room = await load_room_from_db(room_code)
                 if room:
-                    await websocket.send_text(json.dumps({
+                    await safe_send_json(websocket, {
                         "type": "room_state",
                         "room": room
-                    }))
+                    })
                     
                     # Notify other players
                     await broadcast_to_room(room_code, {
