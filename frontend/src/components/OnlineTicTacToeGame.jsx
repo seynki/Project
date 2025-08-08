@@ -277,7 +277,15 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
   };
 
   const handleAnswer = (selectedAnswer) => {
-    if (!currentQuestion || !ws.current) return;
+    if (!currentQuestion || !ws.current || ws.current.readyState !== WebSocket.OPEN) {
+      toast({
+        title: "Sem conexão",
+        description: "Aguarde a reconexão para responder",
+        variant: "destructive",
+        duration: 2000
+      });
+      return;
+    }
 
     ws.current.send(JSON.stringify({
       type: 'make_move',
