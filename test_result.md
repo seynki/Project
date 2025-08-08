@@ -109,9 +109,9 @@ backend:
     implemented: true
     working: true
     file: "/app/backend/server.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: true
         agent: "main"
@@ -119,6 +119,12 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ TESTED: Sistema de salas funcionando perfeitamente. Códigos únicos de 6 caracteres alfanuméricos gerados corretamente, WebSocket endpoint configurado em /ws/{player_id}, gerenciamento completo de estado do jogo, broadcast para jogadores na sala, limpeza automática de salas vazias."
+      - working: false
+        agent: "user"
+        comment: "PROBLEMA REPORTADO: Status da conexão mostra 'Desconectado', 0/2 jogadores conectados, erro 'Não foi possível reconectar ao servidor'"
+      - working: true
+        agent: "main"
+        comment: "CORRIGIDO: Movido endpoint WebSocket de /ws/{player_id} para /api/ws/{player_id} para resolver problema de roteamento do Kubernetes Ingress. APIs HTTP funcionavam mas WebSocket não estava no prefixo /api correto. Testado com wscat - WebSocket conecta corretamente agora."
 
   - task: "API para criar e entrar em salas"
     implemented: true
