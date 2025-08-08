@@ -212,10 +212,11 @@ async def get_room_status(room_code: str):
     """Get current room status"""
     room_code = room_code.upper()
     
-    if room_code not in rooms:
+    # Load room from memory or database
+    room = await load_room_from_db(room_code)
+    if not room:
         raise HTTPException(status_code=404, detail="Sala não encontrada")
     
-    room = rooms[room_code]
     return {
         "room_code": room_code,
         "players": room["players"],
