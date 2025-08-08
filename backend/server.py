@@ -296,10 +296,10 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                 if room:
                     # Validate it's the player's turn
                     if room["current_player_id"] != player_id:
-                        await websocket.send_text(json.dumps({
+                        await safe_send_json(websocket, {
                             "type": "error",
                             "message": "Não é sua vez!"
-                        }))
+                        })
                         continue
                     
                     # Process the move
