@@ -243,3 +243,5 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: "Implementado sistema completo de jogo online com salas e códigos únicos. Recursos principais: 1) Seleção de modo (Local/Online), 2) Criação de sala com código de 6 caracteres, 3) Entrada em sala usando código, 4) Jogo em tempo real via WebSocket, 5) Sincronização completa de estado entre jogadores. Backend usa FastAPI+WebSocket, Frontend usa WebSocket nativo. Sistema pronto para testes."
+  - agent: "testing"
+    message: "✅ BACKEND TESTING COMPLETED: Todos os testes das APIs REST passaram com sucesso (6/6). Sistema de salas online totalmente funcional: códigos únicos, validações corretas, persistência MongoDB, sistema de perguntas históricas operacional. APIs testadas: GET /api/ (health), POST /api/rooms/create, POST /api/rooms/join, GET /api/rooms/{code}/status. Funcionalidades validadas: códigos únicos 6 chars, limite 2 jogadores, primeiro='X'/segundo='O', status waiting→playing, validação sala inexistente/cheia, 20 perguntas História do Brasil com anti-repetição."
