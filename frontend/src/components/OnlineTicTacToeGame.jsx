@@ -104,6 +104,11 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
     console.log('Received message:', message);
 
     switch (message.type) {
+      case 'pong':
+        // Heartbeat response, connection is alive
+        console.log('Heartbeat pong received');
+        break;
+        
       case 'room_state':
         const room = message.room;
         setGameState({
