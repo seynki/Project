@@ -74,6 +74,7 @@ const TicTacToeGame = () => {
     const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
     const newBoard = [...board];
     const newBoardColors = [...boardColors];
+    const previousOwner = board[selectedCell]; // Quem tinha essa célula antes (se havia)
     
     // Marca a célula com a letra do jogador atual
     newBoard[selectedCell] = currentPlayer;
@@ -87,14 +88,23 @@ const TicTacToeGame = () => {
           correct: prev[currentPlayer === 'X' ? 'playerX' : 'playerO'].correct + 1
         }
       }));
+      
+      const message = previousOwner ? 
+        `Jogador ${currentPlayer} conquistou a célula! ✅` : 
+        `Jogador ${currentPlayer} acertou! ✅`;
+      
       setLastAnswerInfo({
         isCorrect: true,
         player: currentPlayer,
-        message: `Jogador ${currentPlayer} acertou! ✅`
+        message: message,
+        conquered: !!previousOwner
       });
+      
       toast({
-        title: `Jogador ${currentPlayer} Acertou! ✅`,
-        description: "Resposta correta! Sua marca foi colocada no tabuleiro.",
+        title: message,
+        description: previousOwner ? 
+          "Você tomou uma célula do adversário com sua resposta correta!" :
+          "Resposta correta! Sua marca foi colocada no tabuleiro.",
         duration: 2000,
       });
     } else {
@@ -114,7 +124,7 @@ const TicTacToeGame = () => {
       });
       toast({
         title: `Jogador ${currentPlayer} Errou ❌`, 
-        description: `A resposta correta era: ${currentQuestion.correctAnswer}`,
+        description: `A resposta correta era: ${currentQuestion.correctAnswer}. O adversário pode conquistar esta célula!`,
         duration: 4000,
       });
     }
@@ -123,21 +133,22 @@ const TicTacToeGame = () => {
     setBoardColors(newBoardColors);
     setUsedQuestions(prev => [...prev, currentQuestion.id]);
 
-    // Check for winner
-    const gameWinner = checkWinner(newBoard);
+    // Check for winner - agora precisa das cores também
+    const gameWinner = checkWinner(newBoard, newBoardColors);
     if (gameWinner) {
       setWinner(gameWinner);
       setGameStatus('won');
       toast({
         title: `🎉 Jogador ${gameWinner} Venceu!`,
-        description: "Conseguiu 3 marcas em linha e ganhou o jogo!",
+        description: "Conseguiu 3 acertos em linha (todos verdes)!",
         duration: 5000,
       });
-    } else if (newBoard.every(cell => cell !== null)) {
+    } else if (newBoard.every(cell => cell !== null) && newBoardColors.every(color => color === 'green')) {
+      // Empate só se tudo estiver preenchido E verde
       setGameStatus('draw');
       toast({
         title: "Empate!",
-        description: "Tabuleiro completo, mas ninguém conseguiu 3 em linha.",
+        description: "Tabuleiro completo, mas ninguém conseguiu 3 acertos seguidos.",
         duration: 3000,
       });
     } else {
