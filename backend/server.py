@@ -13,6 +13,28 @@ import json
 import random
 import string
 from datetime import datetime
+from typing import List, Dict, Optional
+
+
+def json_serializable(obj):
+    """Make objects JSON serializable"""
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    elif isinstance(obj, dict):
+        return {k: json_serializable(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [json_serializable(item) for item in obj]
+    else:
+        return obj
+
+async def safe_send_json(websocket: WebSocket, data: dict):
+    """Safely send JSON data through WebSocket"""
+    try:
+        serializable_data = json_serializable(data)
+        await websocket.send_text(json.dumps(serializable_data))
+    except Exception as e:
+        print(f"Error sending WebSocket message: {e}")
+        raise
 
 
 ROOT_DIR = Path(__file__).parent
