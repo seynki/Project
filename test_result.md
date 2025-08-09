@@ -201,6 +201,18 @@ backend:
         agent: "testing"
         comment: "✅ TESTED: Sistema de perguntas funcionando perfeitamente. Base com 20 perguntas sobre História do Brasil, estrutura correta (id, question, options, correctAnswer, period), sistema anti-repetição implementado, função get_random_question() retorna perguntas válidas com 4 opções cada."
 
+  - task: "Sistema de questões expandido (História + Química)"
+    implemented: true
+    working: true
+    file: "/app/backend/questions.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ EXPANDED QUESTIONS SYSTEM TESTING COMPLETED: Sistema expandido funcionando perfeitamente. Testado conforme solicitado: 1) get_random_question com subject='historia' - retorna questões de história corretamente (60+ questões disponíveis), 2) get_random_question com subject='quimica' - retorna questões de química corretamente (40+ questões disponíveis), 3) Verificado que há mais questões disponíveis agora - total de 100 questões (60 de história + 40 de química), 4) Estrutura correta mantida para ambas as matérias (id, question, options, correctAnswer, period, subject), 5) Sistema anti-repetição funcionando para ambas as matérias. Sistema de questões expandido totalmente funcional."
+
   - task: "Dependências WebSocket"
     implemented: true
     working: true
