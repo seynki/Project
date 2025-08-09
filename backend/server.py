@@ -157,6 +157,54 @@ async def broadcast_to_room(room_code: str, message: Dict):
                     del connections[player_id]
 
 # Add your routes to the router instead of directly to app
+
+# Authentication endpoints
+@api_router.post("/auth/login", response_model=LoginResponse)
+async def login(request: LoginRequest):
+    """Login endpoint"""
+    user = await authenticate_user(request.username, request.password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Usuário ou senha incorretos")
+    
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.id}, expires_delta=access_token_expires
+    )
+    
+    return LoginResponse(
+        access_token=access_token,
+        user_id=user.id,
+        username=user.username
+    )
+
+@api_router.post("/auth/create-test-user")
+async def create_test_user():
+    """Create a test user (remove in production)"""
+    username = "admin"
+    password = "123456"
+    
+    # Check if user already exists
+    existing_user = await get_user_by_username(username)
+    if existing_user:
+        return {"message": "Usuário de teste já existe", "username": username}
+    
+    # Create new user
+    hashed_password = get_password_hash(password)
+    user = User(
+        username=username,
+        hashed_password=hashed_password
+    )
+    
+    await db.users.insert_one({
+        "id": user.id,
+        "username": user.username,
+        "hashed_password": user.hashed_password,
+        "created_at": user.created_at
+    })
+    
+    return {"message": "Usuário de teste criado", "username": username, "password": password}
+
+# Health check
 @api_router.get("/")
 async def root():
     return {"message": "Tic-Tac-Toe Historical Game API"}
