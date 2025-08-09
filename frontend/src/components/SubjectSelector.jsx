@@ -53,6 +53,7 @@ const SubjectSelector = ({ onSelectSubject, onBack }) => {
       blue: 'bg-blue-50 border-blue-300 text-blue-700 hover:bg-blue-100',
       green: 'bg-green-50 border-green-300 text-green-700 hover:bg-green-100',
       yellow: 'bg-yellow-50 border-yellow-300 text-yellow-700 hover:bg-yellow-100',
+      purple: 'bg-purple-50 border-purple-300 text-purple-700 hover:bg-purple-100',
       red: 'bg-red-50 border-red-300 text-red-700 hover:bg-red-100'
     };
     return colors[color] + ' cursor-pointer transform hover:scale-105';
