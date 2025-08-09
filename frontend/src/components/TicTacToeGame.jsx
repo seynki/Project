@@ -18,8 +18,8 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd }) => {
     playerO: { correct: 0, incorrect: 0 } 
   });
   const [globalScore, setGlobalScore] = useState({
-    [players.player1]: 0,
-    [players.player2]: 0
+    'Jogador X': 0,
+    'Jogador O': 0
   });
   const [totalGames, setTotalGames] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(null);
