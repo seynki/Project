@@ -44,7 +44,7 @@ function AppContent() {
   };
 
   const handleSelectSubject = (subjectId) => {
-    if (subjectId === 'historia') {
+    if (subjectId === 'historia' || subjectId === 'quimica') {
       setSelectedSubject(subjectId);
       setCurrentView('game');
       setGameMode('select');
