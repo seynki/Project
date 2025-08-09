@@ -727,8 +727,8 @@ class TicTacToeAPITester:
             player_id_b = join_data["player_id"]
             
             # Step 3: Connect both players via WebSocket
-            ws_url_a = f"wss://049635f0-6eb8-4a9b-8b77-1b9642323842.preview.emergentagent.com/api/ws/{player_id_a}"
-            ws_url_b = f"wss://049635f0-6eb8-4a9b-8b77-1b9642323842.preview.emergentagent.com/api/ws/{player_id_b}"
+            ws_url_a = f"wss://91522345-49d4-43aa-8217-1f59e9996956.preview.emergentagent.com/api/ws/{player_id_a}"
+            ws_url_b = f"wss://91522345-49d4-43aa-8217-1f59e9996956.preview.emergentagent.com/api/ws/{player_id_b}"
             
             async with websockets.connect(ws_url_a) as ws_a, websockets.connect(ws_url_b) as ws_b:
                 # Collect initial messages (could be connected or server ping)
