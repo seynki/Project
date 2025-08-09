@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
-import { Trophy, Medal, Award, TrendingUp } from 'lucide-react';
-import { mockRanking } from '../data/mock';
+import { Trophy, Medal, Award, TrendingUp, Loader2 } from 'lucide-react';
 
 const GlobalRanking = ({ currentPlayers = null }) => {
   const getRankIcon = (position) => {
