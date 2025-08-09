@@ -530,11 +530,57 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+# Authentication Functions
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify a password against its hash"""
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_password_hash(password: str) -> str:
+    """Hash a password"""
+    return pwd_context.hash(password)
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    """Create a JWT access token"""
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+async def get_user_by_username(username: str) -> Optional[User]:
+    """Get user from database by username"""
+    user_data = await db.users.find_one({"username": username})
+    if user_data:
+        return User(**user_data)
+    return None
+
+async def authenticate_user(username: str, password: str) -> Optional[User]:
+    """Authenticate user with username and password"""
+    user = await get_user_by_username(username)
+    if not user or not verify_password(password, user.hashed_password):
+        return None
+    return user
+
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> User:
+    """Get current user from JWT token"""
+    try:
+        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Token inválido")
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Token inválido")
+    
+    user_data = await db.users.find_one({"id": user_id})
+    if user_data is None:
+        raise HTTPException(status_code=401, detail="Usuário não encontrado")
+    return User(**user_data)
+
+# Logging setup
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 @app.on_event("shutdown")
