@@ -20,6 +20,16 @@ import jwt
 from passlib.context import CryptContext
 from questions import get_random_question
 
+# Rankings model
+class PlayerRanking(BaseModel):
+    player_id: str
+    username: str
+    points: int = 0
+    games_played: int = 0
+    games_won: int = 0
+    win_rate: float = 0.0
+    last_played: Optional[datetime] = None
+
 
 def json_serializable(obj):
     """Make objects JSON serializable"""
