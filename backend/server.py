@@ -607,7 +607,7 @@ async def get_user_by_username(username: str) -> Optional[User]:
 
 async def authenticate_user(username: str, password: str) -> Optional[User]:
     """Authenticate user with username and password"""
-    user = await get_user_by_username(username)
+    user = await get_user_by_username(username.lower())
     if not user or not verify_password(password, user.hashed_password):
         return None
     return user
