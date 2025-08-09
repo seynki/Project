@@ -427,7 +427,7 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd }) => {
             <Card className="shadow-lg mt-6">
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl text-blue-800">
-                  Pergunta Histórica
+                  Desafio de Química
                 </CardTitle>
               </CardHeader>
               <CardContent>
