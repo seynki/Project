@@ -320,7 +320,8 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                     await broadcast_to_room(room_code, {
                         "type": "player_joined",
                         "player_name": room["players"].get(player_id, "Unknown"),
-                        "player_count": len(room["players"])
+                        "player_count": len(room["players"]),
+                        "room": room
                     })
                 else:
                     await safe_send_json(websocket, {
