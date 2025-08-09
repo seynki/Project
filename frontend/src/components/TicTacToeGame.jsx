@@ -145,7 +145,7 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd }) => {
     // Check for winner - agora precisa das cores também
     const gameWinner = checkWinner(newBoard, newBoardColors);
     if (gameWinner) {
-      const winnerName = gameWinner === 'X' ? players.player1 : players.player2;
+      const winnerName = gameWinner === 'X' ? 'Jogador X' : 'Jogador O';
       setWinner(winnerName);
       setGameStatus('won');
       
