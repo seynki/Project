@@ -4,6 +4,31 @@ import { Badge } from './ui/badge';
 import { Trophy, Medal, Award, TrendingUp, Loader2 } from 'lucide-react';
 
 const GlobalRanking = ({ currentPlayers = null }) => {
+  const [rankings, setRankings] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
+  useEffect(() => {
+    fetchRankings();
+  }, []);
+
+  const fetchRankings = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${backendUrl}/api/rankings`);
+      if (response.ok) {
+        const data = await response.json();
+        setRankings(data.rankings);
+      } else {
+        console.error('Failed to fetch rankings');
+      }
+    } catch (error) {
+      console.error('Error fetching rankings:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const getRankIcon = (position) => {
     switch (position) {
       case 1:
