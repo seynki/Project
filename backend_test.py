@@ -339,12 +339,24 @@ class TicTacToeAPITester:
             ws_url = f"wss://049635f0-6eb8-4a9b-8b77-1b9642323842.preview.emergentagent.com/api/ws/{player_id}"
             
             async with websockets.connect(ws_url) as websocket:
-                # Should receive initial connected message
-                response = await asyncio.wait_for(websocket.recv(), timeout=5.0)
-                message = json.loads(response)
+                # Collect initial messages (could be connected or server ping)
+                messages = []
+                for _ in range(3):  # Get up to 3 initial messages
+                    try:
+                        response = await asyncio.wait_for(websocket.recv(), timeout=3.0)
+                        message = json.loads(response)
+                        messages.append(message)
+                        
+                        # If we get connected message, that's what we want
+                        if message.get("type") == "connected" and message.get("player_id") == player_id:
+                            break
+                    except asyncio.TimeoutError:
+                        break
                 
-                if message.get("type") == "connected" and message.get("player_id") == player_id:
-                    self.log_test("WebSocket Basic Connection", True, f"Connected successfully, received: {message}")
+                # Check if we got connected message
+                connected_msg = next((msg for msg in messages if msg.get("type") == "connected"), None)
+                if connected_msg and connected_msg.get("player_id") == player_id:
+                    self.log_test("WebSocket Basic Connection", True, f"Connected successfully, received: {connected_msg}")
                     
                     # Test ping/pong
                     await websocket.send(json.dumps({"type": "ping"}))
@@ -358,7 +370,7 @@ class TicTacToeAPITester:
                         self.log_test("WebSocket Ping/Pong", False, f"Expected pong, got: {pong_message}")
                         return False
                 else:
-                    self.log_test("WebSocket Basic Connection", False, f"Unexpected initial message: {message}")
+                    self.log_test("WebSocket Basic Connection", False, f"No connected message found in: {messages}")
                     return False
                     
         except Exception as e:
