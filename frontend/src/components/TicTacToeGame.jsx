@@ -288,7 +288,7 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd }) => {
           </div>
           
           <h1 className="text-4xl font-bold text-green-800 mb-2">
-            Jogo da Velha Histórico
+            Jogo da Velha
           </h1>
           <p className="text-gray-600 mb-2">
             História do Brasil • 1500 - Primeira República
