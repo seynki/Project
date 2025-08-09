@@ -656,9 +656,8 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect, subject = 
                 
 
 
-                <div className="text-center p-3 bg-purple-50 rounded-lg">
-                  <p className="font-semibold text-purple-800">Jogadores</p>
-                  <p className="text-sm text-purple-600 mt-1">
+                <div className="text-right">
+                  <p className="text-xs text-gray-500 mt-1">
                     {Object.keys(gameState.players).length}/2 jogadores
                   </p>
                 </div>
