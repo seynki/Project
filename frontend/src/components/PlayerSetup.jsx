@@ -6,19 +6,12 @@ import { Label } from './ui/label';
 import { Users, Trophy, Play, ArrowLeft } from 'lucide-react';
 
 const PlayerSetup = ({ onStartGame, onBackToModeSelect }) => {
-  const [player1Name, setPlayer1Name] = useState('');
-  const [player2Name, setPlayer2Name] = useState('');
-
   const handleStartGame = () => {
-    if (player1Name.trim() && player2Name.trim()) {
-      onStartGame({
-        player1: player1Name.trim(),
-        player2: player2Name.trim()
-      });
-    }
+    onStartGame({
+      player1: 'X',
+      player2: 'O'
+    });
   };
-
-  const isValid = player1Name.trim() && player2Name.trim();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-yellow-50 p-4 flex items-center justify-center">
@@ -39,57 +32,33 @@ const PlayerSetup = ({ onStartGame, onBackToModeSelect }) => {
             <Users className="w-8 h-8" />
             Jogo Local
           </CardTitle>
-          <p className="text-gray-600">Configure os jogadores para começar</p>
+          <p className="text-gray-600">Jogue no mesmo dispositivo</p>
         </CardHeader>
         
         <CardContent className="space-y-6">
-          {/* Player 1 Input */}
-          <div className="space-y-2">
-            <Label htmlFor="player1" className="text-lg font-semibold text-purple-800">
-              <span className="inline-flex items-center gap-2">
-                <span className="w-8 h-8 bg-purple-100 text-purple-800 rounded-full flex items-center justify-center font-bold">
-                  X
-                </span>
-                Jogador 1
+          {/* Players Info */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-center gap-4 p-4 bg-purple-50 rounded-lg">
+              <span className="w-12 h-12 bg-purple-100 text-purple-800 rounded-full flex items-center justify-center font-bold text-xl">
+                X
               </span>
-            </Label>
-            <Input
-              id="player1"
-              type="text"
-              placeholder="Digite o nome do Jogador 1"
-              value={player1Name}
-              onChange={(e) => setPlayer1Name(e.target.value)}
-              className="text-lg p-3"
-              maxLength={20}
-            />
-          </div>
-
-          {/* Player 2 Input */}
-          <div className="space-y-2">
-            <Label htmlFor="player2" className="text-lg font-semibold text-orange-800">
-              <span className="inline-flex items-center gap-2">
-                <span className="w-8 h-8 bg-orange-100 text-orange-800 rounded-full flex items-center justify-center font-bold">
-                  O
-                </span>
-                Jogador 2
+              <span className="text-lg font-semibold text-purple-800">Jogador X</span>
+            </div>
+            
+            <div className="text-center text-gray-500 font-semibold">VS</div>
+            
+            <div className="flex items-center justify-center gap-4 p-4 bg-orange-50 rounded-lg">
+              <span className="w-12 h-12 bg-orange-100 text-orange-800 rounded-full flex items-center justify-center font-bold text-xl">
+                O
               </span>
-            </Label>
-            <Input
-              id="player2"
-              type="text"
-              placeholder="Digite o nome do Jogador 2"
-              value={player2Name}
-              onChange={(e) => setPlayer2Name(e.target.value)}
-              className="text-lg p-3"
-              maxLength={20}
-            />
+              <span className="text-lg font-semibold text-orange-800">Jogador O</span>
+            </div>
           </div>
 
           {/* Start Game Button */}
           <Button
             onClick={handleStartGame}
-            disabled={!isValid}
-            className="w-full text-lg py-3 bg-green-600 hover:bg-green-700 disabled:opacity-50"
+            className="w-full text-lg py-3 bg-green-600 hover:bg-green-700"
           >
             <Play className="w-5 h-5 mr-2" />
             Começar Jogo Local
