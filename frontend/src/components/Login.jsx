@@ -185,13 +185,6 @@ const Login = ({ onLoginSuccess }) => {
             {isLogin ? 'Não tem conta? Cadastre-se' : 'Já tem conta? Faça login'}
           </button>
         </div>
-
-        {!isLogin && (
-          <div className="mt-4 text-center text-xs text-blue-100 bg-blue-600 bg-opacity-50 p-2 rounded-lg">
-            <p>📝 Digite apenas nomes de pessoas</p>
-            <p>Exemplo: João Silva, Maria Santos</p>
-          </div>
-        )}
       </div>
     </div>
   );
