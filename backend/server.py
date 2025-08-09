@@ -73,6 +73,24 @@ WS_SERVER_PING = os.environ.get('WS_SERVER_PING', 'true').lower() == 'true'
 WS_SERVER_PING_INTERVAL = int(os.environ.get('WS_SERVER_PING_INTERVAL', '20'))  # seconds
 
 # Define Models
+
+# Authentication Models
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+class LoginResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user_id: str
+    username: str
+
+class User(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    username: str
+    hashed_password: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
 class StatusCheck(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     client_name: str
