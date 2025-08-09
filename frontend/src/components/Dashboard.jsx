@@ -68,29 +68,39 @@ const Dashboard = ({ user, onLogout, onSelectTicTacToe }) => {
 
             {/* Propostas */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-              <div className="bg-blue-600 text-white px-6 py-4">
+              <div 
+                className="bg-blue-600 text-white px-6 py-4 cursor-pointer hover:bg-blue-700 transition-colors flex justify-between items-center"
+                onClick={() => toggleSection('propostas')}
+              >
                 <h2 className="text-xl font-bold">Propostas</h2>
+                {openSections.propostas ? (
+                  <ChevronUp className="w-5 h-5" />
+                ) : (
+                  <ChevronDown className="w-5 h-5" />
+                )}
               </div>
-              <div className="p-6">
-                <ul className="space-y-3 text-gray-700">
-                  <li className="flex items-start">
-                    <span className="text-blue-600 mr-2">•</span>
-                    Metodologia lúdica e interativa
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-blue-600 mr-2">•</span>
-                    Aprendizado baseado em jogos educacionais
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-blue-600 mr-2">•</span>
-                    Avaliação contínua através de atividades práticas
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-blue-600 mr-2">•</span>
-                    Desenvolvimento de habilidades críticas
-                  </li>
-                </ul>
-              </div>
+              {openSections.propostas && (
+                <div className="p-6">
+                  <ul className="space-y-3 text-gray-700">
+                    <li className="flex items-start">
+                      <span className="text-blue-600 mr-2">•</span>
+                      Metodologia lúdica e interativa
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-blue-600 mr-2">•</span>
+                      Aprendizado baseado em jogos educacionais
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-blue-600 mr-2">•</span>
+                      Avaliação contínua através de atividades práticas
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-blue-600 mr-2">•</span>
+                      Desenvolvimento de habilidades críticas
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
 
             {/* Disciplinas */}
