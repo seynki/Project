@@ -444,27 +444,34 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
             elif message_type == "get_question":
                 # Client requests a question for a cell
                 cell_index = message.get("cell_index")
+                subject = message.get("subject", "historia")  # Default to historia for backward compatibility
                 
                 room = await load_room_from_db(room_code)
                 if room:
-                    # Set current question and selected cell
-                    question = get_random_question()
+                    # Set current question and selected cell based on subject
+                    if subject == "quimica":
+                        question = get_random_chemistry_question()
+                    else:  # default to historia
+                        question = get_random_question()
                     
                     room["current_question"] = question
                     room["selected_cell"] = cell_index
+                    room["subject"] = subject  # Store subject in room
                     
                     # Send question to the current player
                     await safe_send_json(websocket, {
                         "type": "question",
                         "question": question,
-                        "cell_index": cell_index
+                        "cell_index": cell_index,
+                        "subject": subject
                     })
                     
                     # Notify other player that someone is answering
                     await broadcast_to_room(room_code, {
                         "type": "player_answering",
                         "player_name": room["players"][player_id],
-                        "cell_index": cell_index
+                        "cell_index": cell_index,
+                        "subject": subject
                     })
     
     except WebSocketDisconnect:
