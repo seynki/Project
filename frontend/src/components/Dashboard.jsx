@@ -2,6 +2,18 @@ import React, { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 const Dashboard = ({ user, onLogout, onSelectTicTacToe }) => {
+  const [openSections, setOpenSections] = useState({
+    objetivos: false,
+    propostas: false,
+    disciplinas: false
+  });
+
+  const toggleSection = (section) => {
+    setOpenSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
   const handleLogout = () => {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user_id');
