@@ -347,7 +347,7 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd }) => {
                   </div>
                   <div className="text-center">
                     <Badge variant="outline" className="bg-orange-100 text-orange-800 mb-1">
-                      {players.player2} (O)
+                      Jogador O
                     </Badge>
                     <div className="text-sm">
                       <Badge variant="outline" className="bg-green-100 text-green-800 mr-1">
