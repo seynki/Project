@@ -648,6 +648,56 @@ def check_winner(board: List[Optional[str]], board_colors: List[Optional[str]]) 
     
     return None
 
+# Ranking management functions
+async def update_player_ranking(player_id: str, username: str, won: bool = False):
+    """Update player ranking after a game"""
+    ranking = await rankings_collection.find_one({"player_id": player_id})
+    
+    if ranking:
+        # Update existing ranking
+        new_games_played = ranking["games_played"] + 1
+        new_games_won = ranking["games_won"] + (1 if won else 0)
+        new_points = ranking["points"] + (3 if won else 1)  # 3 points for win, 1 for participation
+        new_win_rate = (new_games_won / new_games_played) * 100
+        
+        await rankings_collection.update_one(
+            {"player_id": player_id},
+            {"$set": {
+                "games_played": new_games_played,
+                "games_won": new_games_won,
+                "points": new_points,
+                "win_rate": round(new_win_rate, 1),
+                "last_played": datetime.utcnow()
+            }}
+        )
+    else:
+        # Create new ranking entry
+        new_ranking = {
+            "player_id": player_id,
+            "username": username,
+            "points": 3 if won else 1,
+            "games_played": 1,
+            "games_won": 1 if won else 0,
+            "win_rate": 100.0 if won else 0.0,
+            "last_played": datetime.utcnow()
+        }
+        await rankings_collection.insert_one(new_ranking)
+
+async def get_rankings():
+    """Get top rankings sorted by points"""
+    cursor = rankings_collection.find().sort("points", -1).limit(20)
+    rankings = []
+    async for ranking in cursor:
+        rankings.append({
+            "id": str(ranking["_id"]),
+            "name": ranking["username"],
+            "points": ranking["points"],
+            "games": ranking["games_played"],
+            "wins": ranking["games_won"],
+            "winRate": ranking["win_rate"]
+        })
+    return rankings
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
