@@ -105,6 +105,21 @@
 user_problem_statement: "modo online teria um botão para criar sala e entrar em criar sala geraria um codigo onde quem quiser jogar precisa desse codigo assim jogando a distancia simultaneamente. PROBLEMA RELATADO: quando entro no modo online tem o botão de criar a sala e entrar na sala quando alguem cria gera um codigo onde quem quer entrar na mesma sala coloca esse codigo porem aparece que não e possivel conectar no servidor e mostra que ninguem esta conectado"
 
 backend:
+  - task: "Sistema de autenticação JWT"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Implementado sistema completo de autenticação JWT com endpoints para criar usuário de teste e login"
+      - working: true
+        agent: "testing"
+        comment: "✅ AUTHENTICATION TESTING COMPLETED: Todos os endpoints de autenticação funcionando perfeitamente (4/4). Testado: 1) POST /api/auth/create-test-user - cria usuário 'admin' com senha '123456' corretamente, 2) POST /api/auth/login com credenciais corretas - retorna JWT token válido com estrutura correta (access_token, token_type=bearer, user_id, username), 3) POST /api/auth/login com credenciais incorretas - retorna 401 com mensagem de erro apropriada, 4) GET /api/ - health check funcionando. Sistema de autenticação totalmente funcional."
+
   - task: "Sistema de salas online com WebSocket"
     implemented: true
     working: true
