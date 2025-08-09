@@ -813,23 +813,44 @@ QUESTIONS = HISTORY_QUESTIONS + CHEMISTRY_QUESTIONS
 
 used_questions = {}
 
-def get_random_question():
+def get_random_question(subject=None):
     """Get a random question, avoiding recently used ones when possible"""
     global used_questions
     
-    # If we've used all questions, reset the used set
-    if len(used_questions) >= len(QUESTIONS):
-        used_questions.clear()
+    # Initialize used_questions for subject if not exists
+    if subject not in used_questions:
+        used_questions[subject] = set()
     
-    # Get available questions
-    available_questions = [q for q in QUESTIONS if q["id"] not in used_questions]
+    # Filter questions by subject if specified
+    if subject:
+        available_pool = [q for q in QUESTIONS if q.get("subject") == subject]
+    else:
+        available_pool = QUESTIONS
+    
+    # If we've used all questions for this subject, reset the used set
+    if len(used_questions[subject]) >= len(available_pool):
+        used_questions[subject].clear()
+    
+    # Get available questions (not recently used)
+    available_questions = [q for q in available_pool if q["id"] not in used_questions[subject]]
     
     if not available_questions:
-        # Fallback to any question
-        available_questions = QUESTIONS
+        # Fallback to any question from the pool
+        available_questions = available_pool
+    
+    if not available_questions:
+        # Final fallback - return a default question
+        return {
+            "id": 1,
+            "question": "Pergunta não encontrada",
+            "options": ["A", "B", "C", "D"],
+            "correctAnswer": "A",
+            "period": "Erro",
+            "subject": subject or "historia"
+        }
     
     # Select random question
     question = random.choice(available_questions)
-    used_questions.add(question["id"])
+    used_questions[subject].add(question["id"])
     
     return question
