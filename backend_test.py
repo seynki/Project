@@ -332,6 +332,111 @@ class TicTacToeAPITester:
             self.log_test("Questions System", False, f"Exception: {str(e)}")
             return False
 
+    def test_create_test_user(self):
+        """Test POST /api/auth/create-test-user - Create test user"""
+        try:
+            response = self.session.post(f"{BACKEND_URL}/auth/create-test-user")
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Validate response structure
+                required_fields = ["message", "username"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    self.log_test("Create Test User", False, f"Missing fields: {missing_fields}", data)
+                    return False
+                
+                # Check if user was created or already exists
+                if "criado" in data["message"] or "existe" in data["message"]:
+                    self.log_test("Create Test User", True, f"Test user handled correctly: {data['message']}", data)
+                    return True
+                else:
+                    self.log_test("Create Test User", False, f"Unexpected message: {data['message']}", data)
+                    return False
+                    
+            else:
+                self.log_test("Create Test User", False, f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Create Test User", False, f"Exception: {str(e)}")
+            return False
+
+    def test_login_correct_credentials(self):
+        """Test POST /api/auth/login with correct credentials (admin/123456)"""
+        try:
+            payload = {"username": "admin", "password": "123456"}
+            response = self.session.post(f"{BACKEND_URL}/auth/login", json=payload)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Validate response structure
+                required_fields = ["access_token", "token_type", "user_id", "username"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    self.log_test("Login Correct Credentials", False, f"Missing fields: {missing_fields}", data)
+                    return False
+                
+                # Validate token type
+                if data["token_type"] != "bearer":
+                    self.log_test("Login Correct Credentials", False, f"Expected token_type 'bearer', got '{data['token_type']}'", data)
+                    return False
+                
+                # Validate username
+                if data["username"] != "admin":
+                    self.log_test("Login Correct Credentials", False, f"Expected username 'admin', got '{data['username']}'", data)
+                    return False
+                
+                # Validate access token exists and is not empty
+                if not data["access_token"] or len(data["access_token"]) < 10:
+                    self.log_test("Login Correct Credentials", False, f"Invalid access token: {data['access_token']}", data)
+                    return False
+                
+                self.log_test("Login Correct Credentials", True, f"Login successful, JWT token received", {
+                    "username": data["username"],
+                    "user_id": data["user_id"],
+                    "token_type": data["token_type"],
+                    "token_length": len(data["access_token"])
+                })
+                return True
+                
+            else:
+                self.log_test("Login Correct Credentials", False, f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Login Correct Credentials", False, f"Exception: {str(e)}")
+            return False
+
+    def test_login_incorrect_credentials(self):
+        """Test POST /api/auth/login with incorrect credentials (should return 401)"""
+        try:
+            payload = {"username": "admin", "password": "wrongpassword"}
+            response = self.session.post(f"{BACKEND_URL}/auth/login", json=payload)
+            
+            if response.status_code == 401:
+                data = response.json()
+                
+                # Validate error response structure
+                if "detail" in data:
+                    self.log_test("Login Incorrect Credentials", True, f"Correctly returned 401 with error: {data['detail']}", data)
+                    return True
+                else:
+                    self.log_test("Login Incorrect Credentials", True, f"Correctly returned 401 status", data)
+                    return True
+                    
+            else:
+                self.log_test("Login Incorrect Credentials", False, f"Expected 401, got {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Login Incorrect Credentials", False, f"Exception: {str(e)}")
+            return False
+
     async def test_websocket_basic_connection(self):
         """Test basic WebSocket connection to /api/ws/{player_id}"""
         try:
