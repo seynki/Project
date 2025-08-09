@@ -2,13 +2,18 @@
 """
 Backend API Tests for Historical Tic-Tac-Toe Online Room System
 Tests all REST APIs for room creation, joining, and status checking
+PLUS WebSocket functionality testing
 """
 
 import requests
 import json
 import time
 import sys
+import asyncio
+import websockets
+import threading
 from typing import Dict, Any
+from concurrent.futures import ThreadPoolExecutor
 
 # Get backend URL from environment
 BACKEND_URL = "https://049635f0-6eb8-4a9b-8b77-1b9642323842.preview.emergentagent.com/api"
