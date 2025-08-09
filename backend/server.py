@@ -445,7 +445,7 @@ async def process_game_move(room_code: str, player_id: str, cell_index: int, sel
         next_symbol = "O" if current_symbol == "X" else "X"
         board["current_player"] = next_symbol
         
-        # Find next player
+        # Find next player deterministically (prioritize existing order)
         for pid, symbol in room["player_symbols"].items():
             if symbol == next_symbol:
                 room["current_player_id"] = pid
