@@ -132,8 +132,8 @@ const SubjectSelector = ({ onSelectSubject, onBack }) => {
             <div>
               <p className="text-green-800 font-semibold">Matérias Disponíveis</p>
               <p className="text-green-700 text-sm">
-                <strong>História</strong> - 20 perguntas sobre História do Brasil<br/>
-                <strong>Química</strong> - 20 perguntas sobre elementos, reações e compostos químicos
+                <strong>História</strong> - 60 perguntas sobre História do Brasil<br/>
+                <strong>Química</strong> - 40 perguntas sobre elementos, reações e compostos químicos
               </p>
             </div>
           </div>
