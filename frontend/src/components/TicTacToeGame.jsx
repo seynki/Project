@@ -239,8 +239,9 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd }) => {
     }
     
     // Adiciona efeito pulsante para células vermelhas (conquistáveis)
-    if (cellColor === 'red' && canClick) {
-      cellStyle += ' animate-pulse border-orange-400';
+    // Vermelho estático (sem animação) para erros
+    if (cellColor === 'red') {
+      cellStyle += ' border-red-400';
     }
     
     return (
