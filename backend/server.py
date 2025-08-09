@@ -186,6 +186,8 @@ async def login(request: LoginRequest):
 @api_router.post("/auth/register", response_model=LoginResponse)
 async def register(request: RegisterRequest):
     """Register new user endpoint"""
+    import re
+    
     # Validate passwords match
     if request.password != request.confirm_password:
         raise HTTPException(status_code=400, detail="As senhas não coincidem")
@@ -194,15 +196,20 @@ async def register(request: RegisterRequest):
     if len(request.password) < 6:
         raise HTTPException(status_code=400, detail="A senha deve ter pelo menos 6 caracteres")
     
+    # Validate username is a person's name (letters, spaces, accents only)
+    name_pattern = r'^[a-zA-ZÀ-ÿ\s\'-]+$'
+    if not re.match(name_pattern, request.username.strip()) or len(request.username.strip()) < 2:
+        raise HTTPException(status_code=400, detail="Digite apenas nomes de pessoas (letras e espaços)")
+    
     # Check if username already exists
     existing_user = await get_user_by_username(request.username.lower())
     if existing_user:
-        raise HTTPException(status_code=400, detail="Nome de usuário já existe")
+        raise HTTPException(status_code=400, detail="Este nome já está em uso")
     
     # Create new user
     hashed_password = get_password_hash(request.password)
     user = User(
-        username=request.username.lower(),
+        username=request.username.lower().strip(),
         hashed_password=hashed_password
     )
     
