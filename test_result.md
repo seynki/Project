@@ -137,6 +137,12 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ COMPREHENSIVE WEBSOCKET TESTING COMPLETED: Todos os testes WebSocket passaram (4/4). Testado: 1) Conexão básica em /api/ws/{player_id} com mensagem 'connected' e ping/pong funcionando, 2) Fluxo completo de sala - criar sala, entrar sala, conectar 2 jogadores via WebSocket, ambos recebem room_state e player_joined, 3) Fluxo de jogo - get_question retorna pergunta válida, make_move com resposta correta gera game_update para ambos jogadores, 4) Server ping automático funcionando (~20s) com resposta pong correta. Sistema WebSocket totalmente estável e funcional."
+      - working: false
+        agent: "user"
+        comment: "BUG REPORTADO: 'criador da sala vê 1/2 e não consegue jogar enquanto o outro vê 2/2 esperando o criador' - problema de sincronização entre jogadores"
+      - working: true
+        agent: "testing"
+        comment: "✅ SYNCHRONIZATION BUG TESTED: Executado teste focado especificamente no bug reportado. RESULTADO: BUG NÃO CONFIRMADO. Teste detalhado mostrou que ambos jogadores (criador e segundo jogador) veem consistentemente 2/2 jogadores após entrada na sala, current_player_id está corretamente definido como criador (X), e criador consegue solicitar get_question e jogar normalmente. Sistema de sincronização funcionando corretamente sem discrepâncias de contagem ou current_player_id nulo."
 
   - task: "API para criar e entrar em salas"
     implemented: true
