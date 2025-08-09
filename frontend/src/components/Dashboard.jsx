@@ -105,29 +105,39 @@ const Dashboard = ({ user, onLogout, onSelectTicTacToe }) => {
 
             {/* Disciplinas */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-              <div className="bg-blue-600 text-white px-6 py-4">
+              <div 
+                className="bg-blue-600 text-white px-6 py-4 cursor-pointer hover:bg-blue-700 transition-colors flex justify-between items-center"
+                onClick={() => toggleSection('disciplinas')}
+              >
                 <h2 className="text-xl font-bold">Disciplinas</h2>
+                {openSections.disciplinas ? (
+                  <ChevronUp className="w-5 h-5" />
+                ) : (
+                  <ChevronDown className="w-5 h-5" />
+                )}
               </div>
-              <div className="p-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-blue-50 p-4 rounded-lg text-center">
-                    <div className="text-blue-600 text-2xl mb-2">📚</div>
-                    <div className="font-semibold text-gray-700">Português</div>
-                  </div>
-                  <div className="bg-green-50 p-4 rounded-lg text-center">
-                    <div className="text-green-600 text-2xl mb-2">🔢</div>
-                    <div className="font-semibold text-gray-700">Matemática</div>
-                  </div>
-                  <div className="bg-yellow-50 p-4 rounded-lg text-center">
-                    <div className="text-yellow-600 text-2xl mb-2">🏛️</div>
-                    <div className="font-semibold text-gray-700">História</div>
-                  </div>
-                  <div className="bg-red-50 p-4 rounded-lg text-center">
-                    <div className="text-red-600 text-2xl mb-2">🌍</div>
-                    <div className="font-semibold text-gray-700">Geografia</div>
+              {openSections.disciplinas && (
+                <div className="p-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-blue-50 p-4 rounded-lg text-center">
+                      <div className="text-blue-600 text-2xl mb-2">📚</div>
+                      <div className="font-semibold text-gray-700">Português</div>
+                    </div>
+                    <div className="bg-green-50 p-4 rounded-lg text-center">
+                      <div className="text-green-600 text-2xl mb-2">🔢</div>
+                      <div className="font-semibold text-gray-700">Matemática</div>
+                    </div>
+                    <div className="bg-yellow-50 p-4 rounded-lg text-center">
+                      <div className="text-yellow-600 text-2xl mb-2">🏛️</div>
+                      <div className="font-semibold text-gray-700">História</div>
+                    </div>
+                    <div className="bg-red-50 p-4 rounded-lg text-center">
+                      <div className="text-red-600 text-2xl mb-2">🌍</div>
+                      <div className="font-semibold text-gray-700">Geografia</div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
