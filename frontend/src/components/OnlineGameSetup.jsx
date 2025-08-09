@@ -11,9 +11,11 @@ import axios from 'axios';
 const OnlineGameSetup = ({ onBackToModeSelect, onRoomCreated, onRoomJoined }) => {
   const [mode, setMode] = useState('select'); // 'select', 'create', 'join'
   const [loading, setLoading] = useState(false);
-  const [playerName, setPlayerName] = useState('');
   const [roomCode, setRoomCode] = useState('');
   const [createdRoom, setCreatedRoom] = useState(null);
+
+  // Get player name from localStorage (login)
+  const playerName = localStorage.getItem('username') || 'Usuário';
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
