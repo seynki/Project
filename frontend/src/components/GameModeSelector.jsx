@@ -9,7 +9,7 @@ const GameModeSelector = ({ onSelectMode }) => {
       <div className="w-full max-w-4xl">
         <div className="text-center mb-8">
           <h1 className="text-5xl font-extrabold tracking-tight text-slate-800 mb-2">
-            Jogo da Velha Histórico
+            Jogo da Velha
           </h1>
           <p className="text-lg text-slate-600">
             Escolha o modo de jogo
