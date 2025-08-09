@@ -95,7 +95,7 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd }) => {
         }
       }));
       
-      const currentPlayerName = currentPlayer === 'X' ? players.player1 : players.player2;
+      const currentPlayerName = currentPlayer === 'X' ? 'Jogador X' : 'Jogador O';
       const message = previousOwner ? 
         `${currentPlayerName} conquistou a célula! ✅` : 
         `${currentPlayerName} acertou! ✅`;
