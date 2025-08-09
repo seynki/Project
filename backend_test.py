@@ -913,7 +913,7 @@ class TicTacToeAPITester:
         """Test server ping functionality (wait up to 25 seconds)"""
         try:
             player_id = "ping-test-player"
-            ws_url = f"wss://049635f0-6eb8-4a9b-8b77-1b9642323842.preview.emergentagent.com/api/ws/{player_id}"
+            ws_url = f"wss://91522345-49d4-43aa-8217-1f59e9996956.preview.emergentagent.com/api/ws/{player_id}"
             
             async with websockets.connect(ws_url) as websocket:
                 await websocket.recv()  # connected message
