@@ -306,14 +306,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Sistema de autenticação JWT"
-    - "Sistema de salas online com WebSocket"
-    - "API para criar e entrar em salas"
-    - "Seletor de modo de jogo (Local vs Online)"
-    - "Interface de criação e entrada em salas"
-    - "Jogo online com WebSocket"
+    - "Sistema de registro de usuários"
+    - "Sistema de questões expandido (História + Química)"
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
 agent_communication:
