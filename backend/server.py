@@ -455,10 +455,10 @@ async def process_game_move(room_code: str, player_id: str, cell_index: int, sel
     room["current_question"] = None
     room["selected_cell"] = None
     
-    # Update database
+    # Update database (persist both board and current_player_id)
     await db.game_rooms.update_one(
         {"_id": room_code},
-        {"$set": {"board": board}}
+        {"$set": {"board": board, "current_player_id": room["current_player_id"]}}
     )
     
     # Broadcast updated game state
