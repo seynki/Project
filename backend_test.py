@@ -842,6 +842,7 @@ class TicTacToeAPITester:
                 ("WebSocket Room Flow", self.test_websocket_room_flow),
                 ("WebSocket Game Flow", self.test_websocket_game_flow),
                 ("WebSocket Server Ping (25s wait)", self.test_websocket_server_ping),
+                ("🔍 ROOM CREATOR SYNCHRONIZATION BUG TEST", self.test_room_creator_synchronization_bug),
             ]
             
             passed = 0
