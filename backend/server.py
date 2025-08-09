@@ -19,7 +19,6 @@ import asyncio
 import jwt
 from passlib.context import CryptContext
 from questions import get_random_question
-from questions_chemistry import get_random_chemistry_question
 
 
 def json_serializable(obj):
