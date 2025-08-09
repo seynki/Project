@@ -500,7 +500,7 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                 if room:
                     # Set current question and selected cell based on subject
                     if subject == "quimica":
-                        question = get_random_chemistry_question()
+                        question = get_random_question()
                     else:  # default to historia
                         question = get_random_question()
                     
