@@ -437,6 +437,187 @@ class TicTacToeAPITester:
             self.log_test("Login Incorrect Credentials", False, f"Exception: {str(e)}")
             return False
 
+    def test_register_valid_user(self):
+        """Test POST /api/auth/register with valid user data"""
+        try:
+            # Use unique username to avoid conflicts
+            import time
+            unique_username = f"testuser{int(time.time())}"
+            payload = {
+                "username": unique_username,
+                "password": "123456",
+                "confirm_password": "123456"
+            }
+            response = self.session.post(f"{BACKEND_URL}/auth/register", json=payload)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Validate response structure (should return JWT token like login)
+                required_fields = ["access_token", "token_type", "user_id", "username"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    self.log_test("Register Valid User", False, f"Missing fields: {missing_fields}", data)
+                    return False
+                
+                # Validate token type
+                if data["token_type"] != "bearer":
+                    self.log_test("Register Valid User", False, f"Expected token_type 'bearer', got '{data['token_type']}'", data)
+                    return False
+                
+                # Validate username
+                if data["username"] != unique_username.lower():  # Backend converts to lowercase
+                    self.log_test("Register Valid User", False, f"Expected username '{unique_username.lower()}', got '{data['username']}'", data)
+                    return False
+                
+                # Validate access token exists and is not empty
+                if not data["access_token"] or len(data["access_token"]) < 10:
+                    self.log_test("Register Valid User", False, f"Invalid access token: {data['access_token']}", data)
+                    return False
+                
+                self.log_test("Register Valid User", True, f"Registration successful, JWT token received", {
+                    "username": data["username"],
+                    "user_id": data["user_id"],
+                    "token_type": data["token_type"],
+                    "token_length": len(data["access_token"])
+                })
+                return True
+                
+            else:
+                self.log_test("Register Valid User", False, f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Register Valid User", False, f"Exception: {str(e)}")
+            return False
+
+    def test_register_password_mismatch(self):
+        """Test POST /api/auth/register with mismatched passwords"""
+        try:
+            payload = {
+                "username": "testuser_mismatch",
+                "password": "123456",
+                "confirm_password": "654321"
+            }
+            response = self.session.post(f"{BACKEND_URL}/auth/register", json=payload)
+            
+            if response.status_code == 400:
+                data = response.json()
+                if "detail" in data and "não coincidem" in data["detail"]:
+                    self.log_test("Register Password Mismatch", True, f"Correctly rejected mismatched passwords: {data['detail']}")
+                    return True
+                else:
+                    self.log_test("Register Password Mismatch", True, f"Correctly returned 400 status", data)
+                    return True
+            else:
+                self.log_test("Register Password Mismatch", False, f"Expected 400, got {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Register Password Mismatch", False, f"Exception: {str(e)}")
+            return False
+
+    def test_register_short_password(self):
+        """Test POST /api/auth/register with password too short (less than 6 characters)"""
+        try:
+            payload = {
+                "username": "testuser_short",
+                "password": "123",
+                "confirm_password": "123"
+            }
+            response = self.session.post(f"{BACKEND_URL}/auth/register", json=payload)
+            
+            if response.status_code == 400:
+                data = response.json()
+                if "detail" in data and ("6 caracteres" in data["detail"] or "pelo menos" in data["detail"]):
+                    self.log_test("Register Short Password", True, f"Correctly rejected short password: {data['detail']}")
+                    return True
+                else:
+                    self.log_test("Register Short Password", True, f"Correctly returned 400 status", data)
+                    return True
+            else:
+                self.log_test("Register Short Password", False, f"Expected 400, got {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Register Short Password", False, f"Exception: {str(e)}")
+            return False
+
+    def test_register_existing_username(self):
+        """Test POST /api/auth/register with existing username (admin)"""
+        try:
+            payload = {
+                "username": "admin",  # This user already exists
+                "password": "123456",
+                "confirm_password": "123456"
+            }
+            response = self.session.post(f"{BACKEND_URL}/auth/register", json=payload)
+            
+            if response.status_code == 400:
+                data = response.json()
+                if "detail" in data and ("já existe" in data["detail"] or "already exists" in data["detail"]):
+                    self.log_test("Register Existing Username", True, f"Correctly rejected existing username: {data['detail']}")
+                    return True
+                else:
+                    self.log_test("Register Existing Username", True, f"Correctly returned 400 status", data)
+                    return True
+            else:
+                self.log_test("Register Existing Username", False, f"Expected 400, got {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Register Existing Username", False, f"Exception: {str(e)}")
+            return False
+
+    def test_login_with_registered_user(self):
+        """Test login with a newly registered user"""
+        try:
+            # First register a new user
+            import time
+            unique_username = f"logintest{int(time.time())}"
+            register_payload = {
+                "username": unique_username,
+                "password": "123456",
+                "confirm_password": "123456"
+            }
+            register_response = self.session.post(f"{BACKEND_URL}/auth/register", json=register_payload)
+            
+            if register_response.status_code != 200:
+                self.log_test("Login with Registered User", False, f"Failed to register user: {register_response.status_code}")
+                return False
+            
+            # Now try to login with the registered user
+            login_payload = {"username": unique_username, "password": "123456"}
+            login_response = self.session.post(f"{BACKEND_URL}/auth/login", json=login_payload)
+            
+            if login_response.status_code == 200:
+                data = login_response.json()
+                
+                # Validate response structure
+                required_fields = ["access_token", "token_type", "user_id", "username"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    self.log_test("Login with Registered User", False, f"Missing fields: {missing_fields}", data)
+                    return False
+                
+                # Validate username matches
+                if data["username"] != unique_username.lower():
+                    self.log_test("Login with Registered User", False, f"Username mismatch: expected '{unique_username.lower()}', got '{data['username']}'")
+                    return False
+                
+                self.log_test("Login with Registered User", True, f"Successfully logged in with registered user: {data['username']}")
+                return True
+                
+            else:
+                self.log_test("Login with Registered User", False, f"Login failed: {login_response.status_code}, {login_response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Login with Registered User", False, f"Exception: {str(e)}")
+            return False
+
     async def test_websocket_basic_connection(self):
         """Test basic WebSocket connection to /api/ws/{player_id}"""
         try:
