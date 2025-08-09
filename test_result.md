@@ -186,7 +186,22 @@ backend:
         agent: "testing"
         comment: "✅ TESTED: Todas as APIs REST funcionando corretamente. POST /api/rooms/create cria salas com códigos únicos, POST /api/rooms/join permite entrada com validações (sala inexistente=404, sala cheia=400), GET /api/rooms/{code}/status retorna status completo. Primeiro jogador sempre 'X', segundo 'O'. Status muda de 'waiting' para 'playing' com 2 jogadores."
 
-  - task: "Base de perguntas históricas"
+  - task: "Sistema de registro de usuários"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Implementado endpoint /api/auth/register com validações completas (senhas coincidem, tamanho mínimo 6 caracteres, username único). Usuário é automaticamente logado após registro bem-sucedido."
+      - working: true
+        agent: "testing"
+        comment: "✅ REGISTRATION SYSTEM TESTING COMPLETED: Todos os 5 testes de registro passaram perfeitamente. Testado: 1) Registro válido com testuser/123456 - retorna JWT token corretamente, 2) Validação de senhas não coincidentes - retorna 400 com mensagem apropriada, 3) Validação de senha muito curta - retorna 400 para senhas < 6 caracteres, 4) Username já existente - retorna 400 quando tenta registrar username 'admin' que já existe, 5) Integração com login - usuário recém-registrado consegue fazer login normalmente. Sistema de registro totalmente funcional."
+
+  - task: "Expansão da base de questões (História e Química)"
     implemented: true
     working: true
     file: "/app/backend/questions.py"
@@ -196,10 +211,22 @@ backend:
     status_history:
       - working: true
         agent: "main"
-        comment: "20 perguntas sobre História do Brasil implementadas com sistema anti-repetição"
+        comment: "Expandida base de questões significativamente: História do Brasil agora com 60 questões (incluindo períodos colonial, imperial, republicano, contemporâneo), Química com 40 questões (tabela periódica, estrutura atômica, ligações químicas, etc.). Sistema consolidado para suportar diferentes matérias."
       - working: true
         agent: "testing"
-        comment: "✅ TESTED: Sistema de perguntas funcionando perfeitamente. Base com 20 perguntas sobre História do Brasil, estrutura correta (id, question, options, correctAnswer, period), sistema anti-repetição implementado, função get_random_question() retorna perguntas válidas com 4 opções cada."
+        comment: "✅ EXPANDED QUESTIONS SYSTEM TESTING COMPLETED: Sistema de questões expandido funcionando corretamente. Total: 100 questões (História: 60, Química: 40). Testado get_random_question com subject='historia' e subject='quimica' - ambos retornam questões corretas da matéria solicitada. Estrutura validada com todos os campos obrigatórios (id, question, options, correctAnswer, period, subject). Sistema anti-repetição funcionando para cada matéria separadamente."
+
+  - task: "Interface de registro no frontend"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/Login.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Implementada interface completa de registro com toggle entre Login/Cadastro. Formulário inclui validações no frontend (senhas coincidem, tamanho mínimo), feedback visual de erros, e integração com API de registro. Design mantém consistência visual com a tela de login existente."
 
   - task: "Sistema de questões expandido (História + Química)"
     implemented: true
