@@ -295,7 +295,7 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd }) => {
           </p>
           {gameStatus === 'playing' && (
             <div className="text-2xl font-bold text-blue-800">
-              Vez de: <span className="text-purple-600">{getCurrentPlayerName()}</span>
+              Vez do: <span className="font-bold text-green-600">Jogador {currentPlayer}</span>
             </div>
           )}
           
