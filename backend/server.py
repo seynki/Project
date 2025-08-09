@@ -184,6 +184,51 @@ async def login(request: LoginRequest):
         username=user.username
     )
 
+@api_router.post("/auth/register", response_model=LoginResponse)
+async def register(request: RegisterRequest):
+    """Register new user endpoint"""
+    # Validate passwords match
+    if request.password != request.confirm_password:
+        raise HTTPException(status_code=400, detail="As senhas não coincidem")
+    
+    # Check password length
+    if len(request.password) < 6:
+        raise HTTPException(status_code=400, detail="A senha deve ter pelo menos 6 caracteres")
+    
+    # Check if username already exists
+    existing_user = await get_user_by_username(request.username.lower())
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Nome de usuário já existe")
+    
+    # Create new user
+    hashed_password = get_password_hash(request.password)
+    user = User(
+        username=request.username.lower(),
+        hashed_password=hashed_password
+    )
+    
+    try:
+        await db.users.insert_one({
+            "id": user.id,
+            "username": user.username,
+            "hashed_password": user.hashed_password,
+            "created_at": user.created_at
+        })
+        
+        # Create access token for immediate login
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": user.id}, expires_delta=access_token_expires
+        )
+        
+        return LoginResponse(
+            access_token=access_token,
+            user_id=user.id,
+            username=user.username
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Erro ao criar usuário")
+
 @api_router.post("/auth/create-test-user")
 async def create_test_user():
     """Create a test user (remove in production)"""
