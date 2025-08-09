@@ -14,6 +14,7 @@ import random
 import string
 from datetime import datetime
 from typing import List, Dict, Optional
+import asyncio
 
 
 def json_serializable(obj):
@@ -33,7 +34,7 @@ async def safe_send_json(websocket: WebSocket, data: dict):
         serializable_data = json_serializable(data)
         await websocket.send_text(json.dumps(serializable_data))
     except Exception as e:
-        print(f"Error sending WebSocket message: {e}")
+        logger.error(f"Error sending WebSocket message: {e}")
         raise
 
 
@@ -54,6 +55,10 @@ api_router = APIRouter(prefix="/api")
 # In-memory storage for game rooms and connections
 rooms: Dict[str, Dict] = {}
 connections: Dict[str, WebSocket] = {}
+
+# WebSocket keepalive configuration (optional)
+WS_SERVER_PING = os.environ.get('WS_SERVER_PING', 'true').lower() == 'true'
+WS_SERVER_PING_INTERVAL = int(os.environ.get('WS_SERVER_PING_INTERVAL', '20'))  # seconds
 
 # Define Models
 class StatusCheck(BaseModel):
@@ -115,7 +120,8 @@ async def broadcast_to_room(room_code: str, message: Dict):
         if player_id in connections:
             try:
                 await safe_send_json(connections[player_id], message)
-            except:
+            except Exception as e:
+                logger.warning(f"Broadcast failed to {player_id}: {e}")
                 # Connection is dead, remove it
                 if player_id in connections:
                     del connections[player_id]
@@ -162,6 +168,7 @@ async def create_room(request: CreateRoomRequest):
     }
     
     rooms[room_code] = room_data
+    logger.info(f"Room created {room_code} by player {player_id} ({request.player_name})")
     
     # Save to database
     await db.game_rooms.insert_one({
@@ -204,9 +211,11 @@ async def join_room(request: JoinRoomRequest):
     # Load room from memory or database
     room = await load_room_from_db(room_code)
     if not room:
+        logger.warning(f"Join failed - room not found: {room_code} ({request.player_name})")
         raise HTTPException(status_code=404, detail="Sala não encontrada")
     
     if len(room["players"]) >= 2:
+        logger.warning(f"Join failed - room full: {room_code} ({request.player_name})")
         raise HTTPException(status_code=400, detail="Sala está cheia")
     
     player_id = str(uuid.uuid4())
@@ -222,6 +231,7 @@ async def join_room(request: JoinRoomRequest):
         {"_id": room_code},
         {"$set": {"players": room["players"], "player_symbols": room["player_symbols"]}}
     )
+    logger.info(f"Player joined room {room_code}: {player_id} ({request.player_name}) - players={len(room['players'])}")
     
     return JoinRoomResponse(
         room_code=room_code, 
@@ -250,23 +260,47 @@ async def get_room_status(room_code: str):
 # Include the router in the main app
 app.include_router(api_router)
 
+async def _server_keepalive(player_id: str):
+    """Optional server-side keepalive pings to client"""
+    try:
+        while True:
+            if player_id not in connections:
+                break
+            ws = connections.get(player_id)
+            if ws is None:
+                break
+            try:
+                await safe_send_json(ws, {"type": "ping", "from": "server"})
+            except Exception as e:
+                logger.warning(f"Keepalive ping failed for {player_id}: {e}")
+                break
+            await asyncio.sleep(WS_SERVER_PING_INTERVAL)
+    except asyncio.CancelledError:
+        pass
+
 @app.websocket("/api/ws/{player_id}")
 async def websocket_endpoint(websocket: WebSocket, player_id: str):
     """WebSocket endpoint for real-time game communication"""
     await websocket.accept()
     connections[player_id] = websocket
+    logger.info(f"WS connected: player_id={player_id}")
+
+    keepalive_task = None
+    if WS_SERVER_PING:
+        keepalive_task = asyncio.create_task(_server_keepalive(player_id))
     
     try:
         # Send initial ping to confirm connection
         await safe_send_json(websocket, {"type": "connected", "player_id": player_id})
         
         while True:
-            # Receive message from client with timeout
+            # Receive message from client
             data = await websocket.receive_text()
             message = json.loads(data)
             
             message_type = message.get("type")
             room_code = message.get("room_code")
+            logger.debug(f"WS message from {player_id}: type={message_type} room={room_code}")
             
             if message_type == "ping":
                 # Heartbeat ping - respond with pong
@@ -342,6 +376,7 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
     
     except WebSocketDisconnect:
         # Handle disconnection
+        logger.info(f"WS disconnected: player_id={player_id}")
         if player_id in connections:
             del connections[player_id]
         
@@ -353,11 +388,13 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                     "type": "player_disconnected",
                     "player_name": room["players"][player_id]
                 })
-                
-                # Don't remove player immediately - give time for reconnection
-                # Only remove if room has been empty for too long
-                # This will be handled by a cleanup task or timeout
                 break
+    except Exception as e:
+        logger.error(f"WS error for {player_id}: {e}")
+        raise
+    finally:
+        if keepalive_task:
+            keepalive_task.cancel()
 
 async def process_game_move(room_code: str, player_id: str, cell_index: int, selected_answer: str, question: Dict):
     """Process a player's move and update game state"""

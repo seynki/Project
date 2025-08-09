@@ -25,16 +25,30 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
 
   const ws = useRef(null);
   const reconnectAttempts = useRef(0);
-  const maxReconnectAttempts = 5;
+  const reconnectTimer = useRef(null);
+  const lastPongAt = useRef(Date.now());
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const wsUrl = backendUrl.replace('https://', 'wss://').replace('http://', 'ws://');
+
+  const scheduleReconnect = () => {
+    const attempt = reconnectAttempts.current;
+    const baseDelay = Math.min(1000 * Math.pow(2, attempt), 30000); // cap at 30s
+    const jitter = Math.floor(Math.random() * 1000); // 0-1s jitter
+    const delay = baseDelay + jitter;
+    if (reconnectTimer.current) clearTimeout(reconnectTimer.current);
+    reconnectTimer.current = setTimeout(() => {
+      reconnectAttempts.current = attempt + 1;
+      console.log(`Tentativa de reconexão ${reconnectAttempts.current} (delay ${delay}ms)`);
+      connectWebSocket();
+    }, delay);
+  };
 
   const connectWebSocket = () => {
     try {
       // Close existing connection
       if (ws.current) {
-        ws.current.close();
+        try { ws.current.onclose = null; ws.current.close(); } catch (_) {}
       }
 
       setConnectionStatus('connecting');
@@ -44,6 +58,7 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
         console.log('WebSocket connected');
         setConnectionStatus('connected');
         reconnectAttempts.current = 0;
+        lastPongAt.current = Date.now();
         
         // Join room after connection is established
         setTimeout(() => {
@@ -70,22 +85,9 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
       ws.current.onclose = (event) => {
         console.log('WebSocket disconnected:', event.code, event.reason);
         setConnectionStatus('disconnected');
-        
-        // Only attempt reconnection if it wasn't a manual close
-        if (event.code !== 1000 && reconnectAttempts.current < maxReconnectAttempts) {
-          const delay = Math.min(1000 * Math.pow(2, reconnectAttempts.current), 10000);
-          setTimeout(() => {
-            reconnectAttempts.current++;
-            console.log(`Tentativa de reconexão ${reconnectAttempts.current}/${maxReconnectAttempts}`);
-            connectWebSocket();
-          }, delay);
-        } else if (reconnectAttempts.current >= maxReconnectAttempts) {
-          toast({
-            title: "Conexão perdida",
-            description: "Não foi possível reconectar ao servidor",
-            variant: "destructive",
-            duration: 5000
-          });
+        // Schedule unlimited reconnects (unless closed cleanly 1000)
+        if (event.code !== 1000) {
+          scheduleReconnect();
         }
       };
 
@@ -97,18 +99,26 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
     } catch (error) {
       console.error('Error connecting WebSocket:', error);
       setConnectionStatus('disconnected');
+      scheduleReconnect();
     }
   };
 
   const handleWebSocketMessage = (message) => {
-    console.log('Received message:', message);
-
+    // console.log('Received message:', message);
     switch (message.type) {
+      case 'connected':
+        lastPongAt.current = Date.now();
+        break;
       case 'pong':
         // Heartbeat response, connection is alive
-        console.log('Heartbeat pong received');
+        lastPongAt.current = Date.now();
         break;
-        
+      case 'ping':
+        // Server keepalive ping: reply with client ping to receive a pong back
+        if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+          ws.current.send(JSON.stringify({ type: 'ping' }));
+        }
+        break;
       case 'room_state':
         const room = message.room;
         setGameState({
@@ -245,19 +255,46 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
   useEffect(() => {
     connectWebSocket();
     
-    // Add heartbeat to keep connection alive
+    // Heartbeat: send ping every 15s and watchdog for missing pongs
     const heartbeatInterval = setInterval(() => {
       if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-        ws.current.send(JSON.stringify({ type: 'ping' }));
+        try {
+          ws.current.send(JSON.stringify({ type: 'ping' }));
+        } catch (_) {}
       }
-    }, 30000); // Send ping every 30 seconds
+    }, 15000);
+
+    const watchdogInterval = setInterval(() => {
+      const now = Date.now();
+      // If no pong for 45s, force reconnect
+      if (connectionStatus === 'connected' && now - lastPongAt.current > 45000) {
+        console.warn('Heartbeat timeout, reconnecting...');
+        try { ws.current && ws.current.close(4001, 'heartbeat-timeout'); } catch (_) {}
+      }
+    }, 5000);
     
+    const onOnline = () => {
+      console.log('Network online - attempting reconnect');
+      if (connectionStatus !== 'connected') connectWebSocket();
+    };
+    const onOffline = () => {
+      console.log('Network offline');
+      setConnectionStatus('disconnected');
+    };
+    window.addEventListener('online', onOnline);
+    window.addEventListener('offline', onOffline);
+
     return () => {
       clearInterval(heartbeatInterval);
+      clearInterval(watchdogInterval);
+      window.removeEventListener('online', onOnline);
+      window.removeEventListener('offline', onOffline);
+      if (reconnectTimer.current) clearTimeout(reconnectTimer.current);
       if (ws.current) {
-        ws.current.close(1000, 'Component unmounted'); // Clean close
+        try { ws.current.close(1000, 'Component unmounted'); } catch (_) {}
       }
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCellClick = (index) => {
