@@ -145,7 +145,24 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
           description: `${message.player_name} entrou na sala`,
           duration: 3000
         });
-        setWaitingForPlayer(message.player_count < 2);
+        // Se o servidor enviar o estado da sala junto ao evento, sincronize completamente
+        if (message.room) {
+          const room = message.room;
+          setGameState({
+            board: room.board.board,
+            boardColors: room.board.board_colors,
+            currentPlayer: room.board.current_player,
+            gameStatus: room.board.game_status,
+            winner: room.board.winner,
+            players: room.players,
+            playerSymbols: room.player_symbols
+          });
+          const mySymbol2 = room.player_symbols[roomData.player_id];
+          setIsMyTurn(room.board.current_player === mySymbol2 && room.board.game_status === 'playing');
+          setWaitingForPlayer(Object.keys(room.players).length < 2);
+        } else {
+          setWaitingForPlayer(message.player_count < 2);
+        }
         break;
 
       case 'game_update':
