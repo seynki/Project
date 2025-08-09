@@ -125,15 +125,15 @@ const SubjectSelector = ({ onSelectSubject, onBack }) => {
           </div>
         </div>
 
-        {/* Available Subject Highlight */}
-        <div className="mt-6 bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded-r-lg">
+        {/* Available Subjects Highlight */}
+        <div className="mt-6 bg-green-100 border-l-4 border-green-500 p-4 rounded-r-lg">
           <div className="flex items-center gap-2">
-            <span className="text-yellow-600 text-xl">⭐</span>
+            <span className="text-green-600 text-xl">⭐</span>
             <div>
-              <p className="text-yellow-800 font-semibold">Matéria em Destaque</p>
-              <p className="text-yellow-700 text-sm">
-                <strong>História</strong> está disponível com 20 perguntas sobre História do Brasil. 
-                Teste seus conhecimentos!
+              <p className="text-green-800 font-semibold">Matérias Disponíveis</p>
+              <p className="text-green-700 text-sm">
+                <strong>História</strong> - 20 perguntas sobre História do Brasil<br/>
+                <strong>Química</strong> - 20 perguntas sobre elementos, reações e compostos químicos
               </p>
             </div>
           </div>
