@@ -22,8 +22,8 @@ const OnlineGameSetup = ({ onBackToModeSelect, onRoomCreated, onRoomJoined }) =>
   const handleCreateRoom = async () => {
     if (!playerName.trim()) {
       toast({
-        title: "Nome necessário",
-        description: "Digite seu nome para criar a sala",
+        title: "Erro de autenticação",
+        description: "Você precisa estar logado para criar uma sala",
         variant: "destructive"
       });
       return;
