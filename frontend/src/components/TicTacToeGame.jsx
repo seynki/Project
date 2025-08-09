@@ -291,7 +291,7 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd }) => {
             Jogo da Velha
           </h1>
           <p className="text-gray-600 mb-2">
-            História do Brasil • 1500 - Primeira República
+            Química • Elementos e Reações
           </p>
           {gameStatus === 'playing' && (
             <div className="text-2xl font-bold text-blue-800">
