@@ -1000,9 +1000,12 @@ class TicTacToeAPITester:
         print("=" * 80)
         print()
         
-        # Test sequence
+        # Test sequence - Authentication tests first as requested
         tests = [
             ("API Health Check", self.test_api_health),
+            ("Create Test User", self.test_create_test_user),
+            ("Login Correct Credentials", self.test_login_correct_credentials),
+            ("Login Incorrect Credentials", self.test_login_incorrect_credentials),
             ("Room Code Uniqueness", self.test_room_code_uniqueness),
             ("Join Nonexistent Room", self.test_join_nonexistent_room),
             ("Join Full Room", self.test_join_full_room),
