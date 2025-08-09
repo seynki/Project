@@ -339,7 +339,8 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect, subject = 
     ws.current.send(JSON.stringify({
       type: 'get_question',
       room_code: roomData.room_code,
-      cell_index: index
+      cell_index: index,
+      subject: subject
     }));
   };
 
