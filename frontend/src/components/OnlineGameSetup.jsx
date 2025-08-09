@@ -278,13 +278,14 @@ const OnlineGameSetup = ({ onBackToModeSelect, onRoomCreated, onRoomJoined }) =>
                   <Input
                     id="playerName"
                     type="text"
-                    placeholder="Digite seu nome"
                     value={playerName}
-                    onChange={(e) => setPlayerName(e.target.value)}
-                    className="text-lg p-3"
-                    maxLength={20}
-                    disabled={loading}
+                    className="text-lg p-3 bg-gray-100"
+                    disabled={true}
+                    readOnly
                   />
+                  <p className="text-sm text-green-600">
+                    Nome do usuário logado será usado automaticamente
+                  </p>
                 </div>
 
                 <div className="text-center p-4 bg-green-50 rounded-lg">
