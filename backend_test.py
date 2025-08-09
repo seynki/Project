@@ -293,39 +293,82 @@ class TicTacToeAPITester:
             # Import the questions module
             import sys
             sys.path.append('/app/backend')
-            from questions import get_random_question, QUESTIONS
+            from questions import get_random_question, QUESTIONS, HISTORY_QUESTIONS, CHEMISTRY_QUESTIONS
             
-            # Test getting random questions
-            questions_received = []
+            # Test getting random questions for historia
+            historia_questions = []
             for i in range(5):
-                question = get_random_question()
+                question = get_random_question(subject="historia")
                 
                 # Validate question structure
-                required_fields = ["id", "question", "options", "correctAnswer", "period"]
+                required_fields = ["id", "question", "options", "correctAnswer", "period", "subject"]
                 missing_fields = [field for field in required_fields if field not in question]
                 
                 if missing_fields:
-                    self.log_test("Questions System", False, f"Question missing fields: {missing_fields}")
+                    self.log_test("Questions System - Historia", False, f"Historia question missing fields: {missing_fields}")
+                    return False
+                
+                # Validate subject is historia
+                if question["subject"] != "historia":
+                    self.log_test("Questions System - Historia", False, f"Expected subject 'historia', got '{question['subject']}'")
                     return False
                 
                 # Validate options format
                 if not isinstance(question["options"], list) or len(question["options"]) != 4:
-                    self.log_test("Questions System", False, f"Invalid options format in question {question['id']}")
+                    self.log_test("Questions System - Historia", False, f"Invalid options format in historia question {question['id']}")
                     return False
                 
                 # Validate correct answer is in options
                 if question["correctAnswer"] not in question["options"]:
-                    self.log_test("Questions System", False, f"Correct answer not in options for question {question['id']}")
+                    self.log_test("Questions System - Historia", False, f"Correct answer not in options for historia question {question['id']}")
                     return False
                 
-                questions_received.append(question)
+                historia_questions.append(question)
+            
+            # Test getting random questions for quimica
+            quimica_questions = []
+            for i in range(5):
+                question = get_random_question(subject="quimica")
+                
+                # Validate question structure
+                required_fields = ["id", "question", "options", "correctAnswer", "period", "subject"]
+                missing_fields = [field for field in required_fields if field not in question]
+                
+                if missing_fields:
+                    self.log_test("Questions System - Quimica", False, f"Quimica question missing fields: {missing_fields}")
+                    return False
+                
+                # Validate subject is quimica
+                if question["subject"] != "quimica":
+                    self.log_test("Questions System - Quimica", False, f"Expected subject 'quimica', got '{question['subject']}'")
+                    return False
+                
+                # Validate options format
+                if not isinstance(question["options"], list) or len(question["options"]) != 4:
+                    self.log_test("Questions System - Quimica", False, f"Invalid options format in quimica question {question['id']}")
+                    return False
+                
+                # Validate correct answer is in options
+                if question["correctAnswer"] not in question["options"]:
+                    self.log_test("Questions System - Quimica", False, f"Correct answer not in options for quimica question {question['id']}")
+                    return False
+                
+                quimica_questions.append(question)
             
             # Check that we have the expected number of questions in database
-            if len(QUESTIONS) != 20:
-                self.log_test("Questions System", False, f"Expected 20 questions, found {len(QUESTIONS)}")
+            total_questions = len(QUESTIONS)
+            historia_count = len(HISTORY_QUESTIONS)
+            quimica_count = len(CHEMISTRY_QUESTIONS)
+            
+            if historia_count < 60:
+                self.log_test("Questions System", False, f"Expected 60+ historia questions, found {historia_count}")
                 return False
             
-            self.log_test("Questions System", True, f"Questions system working correctly. Database has {len(QUESTIONS)} questions, tested {len(questions_received)} random questions")
+            if quimica_count < 40:
+                self.log_test("Questions System", False, f"Expected 40+ quimica questions, found {quimica_count}")
+                return False
+            
+            self.log_test("Questions System", True, f"Expanded questions system working correctly. Total: {total_questions} questions (Historia: {historia_count}, Quimica: {quimica_count}). Tested {len(historia_questions)} historia and {len(quimica_questions)} quimica questions successfully")
             return True
             
         except Exception as e:
