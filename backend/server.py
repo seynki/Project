@@ -315,6 +315,15 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                 # Player joined a room, send initial state
                 room = await load_room_from_db(room_code)
                 if room:
+                    # Se ao conectar só existir 1 player, garanta que o current_player_id aponte para o X (criador)
+                    if len(room["players"]) == 1:
+                        try:
+                            # encontrar jogador com símbolo X
+                            x_player_id = next((pid for pid, sym in room["player_symbols"].items() if sym == "X"), None)
+                            if x_player_id:
+                                room["current_player_id"] = x_player_id
+                        except Exception as e:
+                            logger.warning(f"Failed to set current_player_id on join_room: {e}")
                     await safe_send_json(websocket, {
                         "type": "room_state",
                         "room": room
