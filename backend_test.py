@@ -1230,11 +1230,16 @@ class TicTacToeAPITester:
             ("Create Test User", self.test_create_test_user),
             ("Login Correct Credentials", self.test_login_correct_credentials),
             ("Login Incorrect Credentials", self.test_login_incorrect_credentials),
+            ("Register Valid User", self.test_register_valid_user),
+            ("Register Password Mismatch", self.test_register_password_mismatch),
+            ("Register Short Password", self.test_register_short_password),
+            ("Register Existing Username", self.test_register_existing_username),
+            ("Login with Registered User", self.test_login_with_registered_user),
             ("Room Code Uniqueness", self.test_room_code_uniqueness),
             ("Join Nonexistent Room", self.test_join_nonexistent_room),
             ("Join Full Room", self.test_join_full_room),
             ("Player Symbols and Game Flow", self.test_player_symbols),
-            ("Questions System", self.test_questions_system),
+            ("Expanded Questions System (Historia + Quimica)", self.test_questions_system),
         ]
         
         passed = 0
