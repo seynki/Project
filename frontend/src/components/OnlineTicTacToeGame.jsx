@@ -654,22 +654,7 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect, subject = 
                   <p className="text-2xl font-mono text-blue-600">{roomData.room_code}</p>
                 </div>
                 
-                <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <p className="font-semibold text-gray-800">Status da Conexão</p>
-                  <div className="flex items-center justify-center gap-2 mt-1">
-                    {connectionStatus === 'connected' ? (
-                      <>
-                        <Wifi className="w-4 h-4 text-green-600" />
-                        <span className="text-green-600">Conectado</span>
-                      </>
-                    ) : (
-                      <>
-                        <WifiOff className="w-4 h-4 text-red-600" />
-                        <span className="text-red-600">Desconectado</span>
-                      </>
-                    )}
-                  </div>
-                </div>
+
 
                 <div className="text-center p-3 bg-purple-50 rounded-lg">
                   <p className="font-semibold text-purple-800">Jogadores</p>
