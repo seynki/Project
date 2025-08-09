@@ -131,6 +131,9 @@ backend:
       - working: true
         agent: "main"
         comment: "MELHORIAS IMPLEMENTADAS: 1) Adicionada função load_room_from_db() para persistir salas no banco, 2) Melhorada lógica de reconexão no frontend com backoff exponencial, 3) Removida limpeza agressiva de salas - salas persistem em caso de desconexão temporária, 4) Melhorada validação de conexão WebSocket antes de enviar mensagens"
+      - working: true
+        agent: "main"
+        comment: "ADICIONADO: Keepalive no servidor (ping opcional) + logs detalhados; no frontend, heartbeat a cada 15s com watchdog de 45s e reconexão ilimitada com backoff e jitter. Estabilidade melhorada para redes Wi‑Fi com variação de latência."
 
   - task: "API para criar e entrar em salas"
     implemented: true
