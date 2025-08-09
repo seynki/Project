@@ -229,7 +229,11 @@ async def join_room(request: JoinRoomRequest):
     # Update database
     await db.game_rooms.update_one(
         {"_id": room_code},
-        {"$set": {"players": room["players"], "player_symbols": room["player_symbols"]}}
+        {"$set": {
+            "players": room["players"],
+            "player_symbols": room["player_symbols"],
+            "board": room["board"]
+        }}
     )
     logger.info(f"Player joined room {room_code}: {player_id} ({request.player_name}) - players={len(room['players'])}")
     
