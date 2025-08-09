@@ -775,18 +775,32 @@ class TicTacToeAPITester:
                     print(f"   Player_joined events - A: {len(player_joined_a)}, B: {len(player_joined_b)}")
                     print(f"   Room_state events - B: {len(room_state_b)}")
                     
+                    # CRITICAL BUG DETECTION: Check for inconsistent player counts
+                    bug_detected = False
+                    players_seen_by_a = None
+                    players_seen_by_b = None
+                    
                     # Validate both see 2/2 players
                     if player_joined_a:
-                        room_in_joined_a = player_joined_a[0].get("room", {})
-                        players_a = len(room_in_joined_a.get("players", {}))
+                        room_in_joined_a = player_joined_a[-1].get("room", {})  # Get latest message
+                        players_seen_by_a = len(room_in_joined_a.get("players", {}))
                         current_player_id_a = room_in_joined_a.get("current_player_id")
-                        print(f"   TesterA sees: {players_a} players, current_player_id={current_player_id_a}")
+                        print(f"   TesterA sees: {players_seen_by_a} players, current_player_id={current_player_id_a}")
                     
                     if room_state_b:
                         room_in_state_b = room_state_b[0].get("room", {})
-                        players_b = len(room_in_state_b.get("players", {}))
+                        players_seen_by_b = len(room_in_state_b.get("players", {}))
                         current_player_id_b = room_in_state_b.get("current_player_id")
-                        print(f"   TesterB sees: {players_b} players, current_player_id={current_player_id_b}")
+                        print(f"   TesterB sees: {players_seen_by_b} players, current_player_id={current_player_id_b}")
+                    
+                    # DETECT THE REPORTED BUG
+                    if players_seen_by_a and players_seen_by_b:
+                        if players_seen_by_a != players_seen_by_b:
+                            bug_detected = True
+                            print(f"🚨 BUG DETECTED: Player count mismatch!")
+                            print(f"   Creator (TesterA) sees: {players_seen_by_a}/2 players")
+                            print(f"   Joiner (TesterB) sees: {players_seen_by_b}/2 players")
+                            print(f"   This matches the reported bug: 'criador da sala vê 1/2 e não consegue jogar enquanto o outro vê 2/2'")
                     
                     # Step 5: Test that creator (X) can get_question
                     print("Step 5: Testing creator can get_question...")
@@ -813,19 +827,24 @@ class TicTacToeAPITester:
                             continue
                     
                     if not question_received:
-                        self.log_test("Room Creator Sync Bug", False, "Creator (TesterA) could not get question - this is the reported bug!")
-                        return False
+                        print(f"❌ Creator (TesterA) could not get question - this confirms the reported bug!")
+                        bug_detected = True
                     
                     # Step 6: Verify persistence by checking DB current_player_id
                     print("Step 6: Verifying current_player_id persistence...")
                     final_status = self.test_room_status(room_code)
                     if final_status:
                         print(f"✅ Final DB state: {final_status['player_count']} players, status={final_status['game_status']}")
-                        # Note: current_player_id is not exposed in the status endpoint, but we tested it works via WebSocket
                     
-                    self.log_test("Room Creator Sync Bug", True, 
-                        "✅ SYNCHRONIZATION BUG TEST PASSED: Creator can create room, both players see consistent state (2/2), creator can get questions and play. No synchronization issues detected.")
-                    return True
+                    # Final assessment
+                    if bug_detected:
+                        self.log_test("Room Creator Sync Bug", False, 
+                            f"🚨 SYNCHRONIZATION BUG CONFIRMED: Creator sees {players_seen_by_a}/2 players while joiner sees {players_seen_by_b}/2 players. This matches the reported issue where 'criador da sala vê 1/2 e não consegue jogar enquanto o outro vê 2/2 esperando o criador'.")
+                        return False
+                    else:
+                        self.log_test("Room Creator Sync Bug", True, 
+                            "✅ SYNCHRONIZATION BUG TEST PASSED: Creator can create room, both players see consistent state (2/2), creator can get questions and play. No synchronization issues detected.")
+                        return True
                     
         except Exception as e:
             self.log_test("Room Creator Sync Bug", False, f"Exception during synchronization test: {str(e)}")
