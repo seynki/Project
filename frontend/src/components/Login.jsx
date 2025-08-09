@@ -8,10 +8,24 @@ const Login = ({ onLoginSuccess }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Function to validate if input contains only person names (letters, spaces, accents)
+  const isValidPersonName = (name) => {
+    // Allow letters (including accented), spaces, apostrophes, and hyphens
+    const nameRegex = /^[a-zA-ZÀ-ÿ\s'-]+$/;
+    return nameRegex.test(name) && name.trim().length >= 2;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+
+    // Validate name format for both login and register
+    if (!isValidPersonName(username)) {
+      setError('Por favor, digite apenas nomes de pessoas (letras e espaços)');
+      setIsLoading(false);
+      return;
+    }
 
     if (!isLogin) {
       // Registration validation
@@ -105,7 +119,7 @@ const Login = ({ onLoginSuccess }) => {
           <div>
             <input
               type="text"
-              placeholder="Usuário"
+              placeholder="Nome"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-3 rounded-full bg-white bg-opacity-90 border-0 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-gray-700 placeholder-gray-500"
@@ -171,6 +185,13 @@ const Login = ({ onLoginSuccess }) => {
             {isLogin ? 'Não tem conta? Cadastre-se' : 'Já tem conta? Faça login'}
           </button>
         </div>
+
+        {!isLogin && (
+          <div className="mt-4 text-center text-xs text-blue-100 bg-blue-600 bg-opacity-50 p-2 rounded-lg">
+            <p>📝 Digite apenas nomes de pessoas</p>
+            <p>Exemplo: João Silva, Maria Santos</p>
+          </div>
+        )}
       </div>
     </div>
   );
