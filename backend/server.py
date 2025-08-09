@@ -1,5 +1,6 @@
-from fastapi import FastAPI, APIRouter, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi import FastAPI, APIRouter, WebSocket, WebSocketDisconnect, HTTPException, Depends
 from fastapi.responses import JSONResponse
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -12,9 +13,11 @@ import uuid
 import json
 import random
 import string
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Dict, Optional
 import asyncio
+import jwt
+from passlib.context import CryptContext
 
 
 def json_serializable(obj):
