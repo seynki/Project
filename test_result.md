@@ -334,7 +334,8 @@ metadata:
 test_plan:
   current_focus:
     - "Sistema de registro de usuários"
-    - "Sistema de questões expandido (História + Química)"
+    - "Expansão da base de questões (História e Química)"
+    - "Interface de registro no frontend"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
