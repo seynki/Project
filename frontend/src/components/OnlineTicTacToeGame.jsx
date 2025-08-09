@@ -643,19 +643,11 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect, subject = 
           {/* Game Info */}
           <div>
             <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-xl text-center text-blue-800">
-                  Informações da Sala
-                </CardTitle>
-              </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center p-3 bg-blue-50 rounded-lg">
-                  <p className="font-semibold text-blue-800">Código da Sala</p>
                   <p className="text-2xl font-mono text-blue-600">{roomData.room_code}</p>
                 </div>
                 
-
-
                 <div className="text-right">
                   <p className="text-xs text-gray-500 mt-1">
                     {Object.keys(gameState.players).length}/2 jogadores
