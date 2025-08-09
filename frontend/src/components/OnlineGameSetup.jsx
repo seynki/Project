@@ -389,12 +389,10 @@ const OnlineGameSetup = ({ onBackToModeSelect, onRoomCreated, onRoomJoined }) =>
               <Input
                 id="playerName"
                 type="text"
-                placeholder="Digite seu nome"
                 value={playerName}
-                onChange={(e) => setPlayerName(e.target.value)}
-                className="text-lg p-3"
-                maxLength={20}
-                disabled={loading}
+                className="text-lg p-3 bg-gray-100"
+                disabled={true}
+                readOnly
               />
             </div>
 
