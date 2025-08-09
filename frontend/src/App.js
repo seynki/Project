@@ -6,13 +6,67 @@ import PlayerSetup from "./components/PlayerSetup";
 import GameModeSelector from "./components/GameModeSelector";
 import OnlineGameSetup from "./components/OnlineGameSetup";
 import OnlineTicTacToeGame from "./components/OnlineTicTacToeGame";
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
+import SubjectSelector from "./components/SubjectSelector";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { Toaster } from "./components/ui/toaster";
 
-function App() {
+function AppContent() {
+  const { user, isAuthenticated, isLoading, login, logout } = useAuth();
+  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard', 'subjects', 'game'
   const [gameMode, setGameMode] = useState('select'); // 'select', 'local', 'online'
   const [players, setPlayers] = useState(null);
-  const [gameKey, setGameKey] = useState(0); // Para forçar re-render do jogo
+  const [gameKey, setGameKey] = useState(0);
   const [onlineRoom, setOnlineRoom] = useState(null);
+  const [selectedSubject, setSelectedSubject] = useState(null);
+
+  // Authentication loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+        <div className="text-white text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-lg">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login if not authenticated
+  if (!isAuthenticated) {
+    return <Login onLoginSuccess={login} />;
+  }
+
+  // Authenticated user views
+  const handleSelectTicTacToe = () => {
+    setCurrentView('subjects');
+  };
+
+  const handleSelectSubject = (subjectId) => {
+    if (subjectId === 'historia') {
+      setSelectedSubject(subjectId);
+      setCurrentView('game');
+      setGameMode('select');
+    }
+  };
+
+  const handleBackToDashboard = () => {
+    setCurrentView('dashboard');
+    setGameMode('select');
+    setPlayers(null);
+    setOnlineRoom(null);
+    setSelectedSubject(null);
+    setGameKey(prev => prev + 1);
+  };
+
+  const handleBackToSubjects = () => {
+    setCurrentView('subjects');
+    setGameMode('select');
+    setPlayers(null);
+    setOnlineRoom(null);
+    setGameKey(prev => prev + 1);
+  };
 
   const handleSelectMode = (mode) => {
     setGameMode(mode);
@@ -27,7 +81,7 @@ function App() {
   const handleBackToSetup = () => {
     if (gameMode === 'local') {
       setPlayers(null);
-      setGameKey(prev => prev + 1); // Força reset completo do jogo
+      setGameKey(prev => prev + 1);
     } else if (gameMode === 'online') {
       setOnlineRoom(null);
     }
@@ -41,7 +95,6 @@ function App() {
   };
 
   const handleGameEnd = (winnerName, symbol) => {
-    // Aqui poderia salvar no backend
     console.log(`Jogo terminou! Vencedor: ${winnerName} (${symbol})`);
   };
 
@@ -57,85 +110,149 @@ function App() {
     setOnlineRoom(null);
   };
 
-  // Game Mode Selection
-  if (gameMode === 'select') {
-    return (
-      <div className="App">
-        <GameModeSelector onSelectMode={handleSelectMode} />
-        <Toaster />
-      </div>
-    );
+  // Dashboard view
+  if (currentView === 'dashboard') {
+    return <Dashboard user={user} onLogout={logout} onSelectTicTacToe={handleSelectTicTacToe} />;
   }
 
-  // Local Game Mode
-  if (gameMode === 'local') {
-    return (
-      <div className="App">
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                !players ? (
-                  <PlayerSetup 
-                    onStartGame={handleStartLocalGame}
-                    onBackToModeSelect={handleBackToModeSelect}
-                  />
-                ) : (
-                  <TicTacToeGame
-                    key={gameKey}
-                    players={players}
-                    onBackToSetup={handleBackToSetup}
-                    onGameEnd={handleGameEnd}
-                  />
-                )
-              }
-            />
-          </Routes>
-        </BrowserRouter>
-        <Toaster />
-      </div>
-    );
+  // Subject selection view
+  if (currentView === 'subjects') {
+    return <SubjectSelector onSelectSubject={handleSelectSubject} onBack={handleBackToDashboard} />;
   }
 
-  // Online Game Mode
-  if (gameMode === 'online') {
-    return (
-      <div className="App">
-        {!onlineRoom ? (
-          <OnlineGameSetup
-            onBackToModeSelect={handleBackToModeSelect}
-            onRoomCreated={handleRoomCreated}
-            onRoomJoined={handleRoomJoined}
-          />
-        ) : (
-          <OnlineTicTacToeGame
-            roomData={onlineRoom}
-            onBackToSetup={handleBackToSetup}
-            onDisconnect={handleOnlineDisconnect}
-          />
-        )}
-        <Toaster />
-      </div>
-    );
+  // Game views (História only)
+  if (currentView === 'game' && selectedSubject === 'historia') {
+    // Game Mode Selection for História
+    if (gameMode === 'select') {
+      return (
+        <div className="App">
+          <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
+            <div className="container mx-auto px-6 py-8">
+              <div className="mb-6">
+                <button
+                  onClick={handleBackToSubjects}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                >
+                  ← Voltar às Matérias
+                </button>
+              </div>
+              
+              <div className="text-center mb-8">
+                <h1 className="text-4xl font-bold text-gray-800 mb-2">História do Brasil</h1>
+                <p className="text-gray-600 text-lg">Escolha o modo de jogo</p>
+              </div>
+              
+              <GameModeSelector onSelectMode={handleSelectMode} />
+            </div>
+          </div>
+          <Toaster />
+        </div>
+      );
+    }
+
+    // Local Game Mode
+    if (gameMode === 'local') {
+      return (
+        <div className="App">
+          <BrowserRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  !players ? (
+                    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
+                      <div className="container mx-auto px-6 py-8">
+                        <div className="mb-6">
+                          <button
+                            onClick={handleBackToModeSelect}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                          >
+                            ← Voltar aos Modos
+                          </button>
+                        </div>
+                        <PlayerSetup 
+                          onStartGame={handleStartLocalGame}
+                          onBackToModeSelect={handleBackToModeSelect}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <TicTacToeGame
+                      key={gameKey}
+                      players={players}
+                      onBackToSetup={handleBackToSetup}
+                      onGameEnd={handleGameEnd}
+                    />
+                  )
+                }
+              />
+            </Routes>
+          </BrowserRouter>
+          <Toaster />
+        </div>
+      );
+    }
+
+    // Online Game Mode
+    if (gameMode === 'online') {
+      return (
+        <div className="App">
+          <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
+            {!onlineRoom ? (
+              <div className="container mx-auto px-6 py-8">
+                <div className="mb-6">
+                  <button
+                    onClick={handleBackToModeSelect}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                  >
+                    ← Voltar aos Modos
+                  </button>
+                </div>
+                <OnlineGameSetup
+                  onBackToModeSelect={handleBackToModeSelect}
+                  onRoomCreated={handleRoomCreated}
+                  onRoomJoined={handleRoomJoined}
+                />
+              </div>
+            ) : (
+              <OnlineTicTacToeGame
+                roomData={onlineRoom}
+                onBackToSetup={handleBackToSetup}
+                onDisconnect={handleOnlineDisconnect}
+              />
+            )}
+          </div>
+          <Toaster />
+        </div>
+      );
+    }
   }
 
+  // Fallback error state
   return (
     <div className="App">
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 p-4 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-800 mb-4">Erro</h1>
-          <p className="text-red-600 mb-4">Estado de jogo inválido</p>
+          <p className="text-red-600 mb-4">Estado da aplicação inválido</p>
           <button 
-            onClick={handleBackToModeSelect}
+            onClick={handleBackToDashboard}
             className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
           >
-            Voltar ao Início
+            Voltar ao Dashboard
           </button>
         </div>
       </div>
       <Toaster />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 
