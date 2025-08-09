@@ -331,6 +331,279 @@ class TicTacToeAPITester:
         except Exception as e:
             self.log_test("Questions System", False, f"Exception: {str(e)}")
             return False
+
+    async def test_websocket_basic_connection(self):
+        """Test basic WebSocket connection to /api/ws/{player_id}"""
+        try:
+            player_id = "test-player-123"
+            ws_url = f"wss://049635f0-6eb8-4a9b-8b77-1b9642323842.preview.emergentagent.com/api/ws/{player_id}"
+            
+            async with websockets.connect(ws_url) as websocket:
+                # Should receive initial connected message
+                response = await asyncio.wait_for(websocket.recv(), timeout=5.0)
+                message = json.loads(response)
+                
+                if message.get("type") == "connected" and message.get("player_id") == player_id:
+                    self.log_test("WebSocket Basic Connection", True, f"Connected successfully, received: {message}")
+                    
+                    # Test ping/pong
+                    await websocket.send(json.dumps({"type": "ping"}))
+                    pong_response = await asyncio.wait_for(websocket.recv(), timeout=5.0)
+                    pong_message = json.loads(pong_response)
+                    
+                    if pong_message.get("type") == "pong":
+                        self.log_test("WebSocket Ping/Pong", True, f"Ping/pong working: {pong_message}")
+                        return True
+                    else:
+                        self.log_test("WebSocket Ping/Pong", False, f"Expected pong, got: {pong_message}")
+                        return False
+                else:
+                    self.log_test("WebSocket Basic Connection", False, f"Unexpected initial message: {message}")
+                    return False
+                    
+        except Exception as e:
+            self.log_test("WebSocket Basic Connection", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_websocket_room_flow(self):
+        """Test complete room flow with WebSocket connections"""
+        try:
+            # Step 1: Create room via REST API
+            room_data = self.test_create_room("Tester1")
+            if not room_data:
+                self.log_test("WebSocket Room Flow", False, "Failed to create room")
+                return False
+            
+            room_code = room_data["room_code"]
+            player_id_a = room_data["player_id"]
+            
+            # Step 2: Join room via REST API
+            join_data = self.test_join_room(room_code, "Tester2")
+            if not join_data:
+                self.log_test("WebSocket Room Flow", False, "Failed to join room")
+                return False
+            
+            player_id_b = join_data["player_id"]
+            
+            # Step 3: Connect both players via WebSocket
+            ws_url_a = f"wss://049635f0-6eb8-4a9b-8b77-1b9642323842.preview.emergentagent.com/api/ws/{player_id_a}"
+            ws_url_b = f"wss://049635f0-6eb8-4a9b-8b77-1b9642323842.preview.emergentagent.com/api/ws/{player_id_b}"
+            
+            async with websockets.connect(ws_url_a) as ws_a, websockets.connect(ws_url_b) as ws_b:
+                # Receive initial connected messages
+                msg_a = json.loads(await asyncio.wait_for(ws_a.recv(), timeout=5.0))
+                msg_b = json.loads(await asyncio.wait_for(ws_b.recv(), timeout=5.0))
+                
+                if msg_a.get("type") != "connected" or msg_b.get("type") != "connected":
+                    self.log_test("WebSocket Room Flow", False, f"Failed to connect both players: {msg_a}, {msg_b}")
+                    return False
+                
+                # Step 4: Both players join the room
+                await ws_a.send(json.dumps({"type": "join_room", "room_code": room_code}))
+                await ws_b.send(json.dumps({"type": "join_room", "room_code": room_code}))
+                
+                # Collect messages for a few seconds
+                messages_a = []
+                messages_b = []
+                
+                for _ in range(4):  # Try to get up to 4 messages from each
+                    try:
+                        msg_a = await asyncio.wait_for(ws_a.recv(), timeout=2.0)
+                        messages_a.append(json.loads(msg_a))
+                    except asyncio.TimeoutError:
+                        break
+                
+                for _ in range(4):
+                    try:
+                        msg_b = await asyncio.wait_for(ws_b.recv(), timeout=2.0)
+                        messages_b.append(json.loads(msg_b))
+                    except asyncio.TimeoutError:
+                        break
+                
+                # Check if both received room_state and player_joined messages
+                room_state_a = any(msg.get("type") == "room_state" for msg in messages_a)
+                room_state_b = any(msg.get("type") == "room_state" for msg in messages_b)
+                player_joined_a = any(msg.get("type") == "player_joined" for msg in messages_a)
+                player_joined_b = any(msg.get("type") == "player_joined" for msg in messages_b)
+                
+                if room_state_a and room_state_b:
+                    self.log_test("WebSocket Room Flow", True, f"Both players received room_state. Player A msgs: {len(messages_a)}, Player B msgs: {len(messages_b)}")
+                    return True
+                else:
+                    self.log_test("WebSocket Room Flow", False, f"Missing room_state messages. A: {room_state_a}, B: {room_state_b}. Messages A: {messages_a}, Messages B: {messages_b}")
+                    return False
+                    
+        except Exception as e:
+            self.log_test("WebSocket Room Flow", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_websocket_game_flow(self):
+        """Test game flow with get_question and make_move"""
+        try:
+            # Create room and join
+            room_data = self.test_create_room("GameTester1")
+            if not room_data:
+                return False
+            
+            room_code = room_data["room_code"]
+            player_id_a = room_data["player_id"]
+            
+            join_data = self.test_join_room(room_code, "GameTester2")
+            if not join_data:
+                return False
+            
+            player_id_b = join_data["player_id"]
+            
+            # Connect both players
+            ws_url_a = f"wss://049635f0-6eb8-4a9b-8b77-1b9642323842.preview.emergentagent.com/api/ws/{player_id_a}"
+            ws_url_b = f"wss://049635f0-6eb8-4a9b-8b77-1b9642323842.preview.emergentagent.com/api/ws/{player_id_b}"
+            
+            async with websockets.connect(ws_url_a) as ws_a, websockets.connect(ws_url_b) as ws_b:
+                # Initial setup
+                await ws_a.recv()  # connected message
+                await ws_b.recv()  # connected message
+                
+                await ws_a.send(json.dumps({"type": "join_room", "room_code": room_code}))
+                await ws_b.send(json.dumps({"type": "join_room", "room_code": room_code}))
+                
+                # Clear initial messages
+                for _ in range(3):
+                    try:
+                        await asyncio.wait_for(ws_a.recv(), timeout=1.0)
+                        await asyncio.wait_for(ws_b.recv(), timeout=1.0)
+                    except asyncio.TimeoutError:
+                        break
+                
+                # Test get_question (player A requests question for cell 0)
+                await ws_a.send(json.dumps({
+                    "type": "get_question",
+                    "room_code": room_code,
+                    "cell_index": 0
+                }))
+                
+                # Player A should receive question
+                question_response = await asyncio.wait_for(ws_a.recv(), timeout=5.0)
+                question_msg = json.loads(question_response)
+                
+                if question_msg.get("type") != "question":
+                    self.log_test("WebSocket Game Flow", False, f"Expected question, got: {question_msg}")
+                    return False
+                
+                question = question_msg.get("question")
+                if not question or "correctAnswer" not in question:
+                    self.log_test("WebSocket Game Flow", False, f"Invalid question format: {question}")
+                    return False
+                
+                # Test make_move
+                await ws_a.send(json.dumps({
+                    "type": "make_move",
+                    "room_code": room_code,
+                    "cell_index": 0,
+                    "selected_answer": question["correctAnswer"],
+                    "question": question
+                }))
+                
+                # Both players should receive game_update
+                update_a = await asyncio.wait_for(ws_a.recv(), timeout=5.0)
+                update_b = await asyncio.wait_for(ws_b.recv(), timeout=5.0)
+                
+                update_msg_a = json.loads(update_a)
+                update_msg_b = json.loads(update_b)
+                
+                if (update_msg_a.get("type") == "game_update" and 
+                    update_msg_b.get("type") == "game_update"):
+                    self.log_test("WebSocket Game Flow", True, f"Game flow working: question received, move made, both players got game_update")
+                    return True
+                else:
+                    self.log_test("WebSocket Game Flow", False, f"Expected game_update, got A: {update_msg_a}, B: {update_msg_b}")
+                    return False
+                    
+        except Exception as e:
+            self.log_test("WebSocket Game Flow", False, f"Exception: {str(e)}")
+            return False
+
+    async def test_websocket_server_ping(self):
+        """Test server ping functionality (wait up to 25 seconds)"""
+        try:
+            player_id = "ping-test-player"
+            ws_url = f"wss://049635f0-6eb8-4a9b-8b77-1b9642323842.preview.emergentagent.com/api/ws/{player_id}"
+            
+            async with websockets.connect(ws_url) as websocket:
+                await websocket.recv()  # connected message
+                
+                # Wait for server ping (up to 25 seconds)
+                server_ping_received = False
+                start_time = time.time()
+                
+                while time.time() - start_time < 25:
+                    try:
+                        message = await asyncio.wait_for(websocket.recv(), timeout=5.0)
+                        msg = json.loads(message)
+                        
+                        if msg.get("type") == "ping" and msg.get("from") == "server":
+                            server_ping_received = True
+                            self.log_test("WebSocket Server Ping", True, f"Server ping received: {msg}")
+                            
+                            # Respond with ping to test pong response
+                            await websocket.send(json.dumps({"type": "ping"}))
+                            pong_response = await asyncio.wait_for(websocket.recv(), timeout=5.0)
+                            pong_msg = json.loads(pong_response)
+                            
+                            if pong_msg.get("type") == "pong":
+                                self.log_test("WebSocket Server Ping Response", True, f"Server responded with pong: {pong_msg}")
+                                return True
+                            else:
+                                self.log_test("WebSocket Server Ping Response", False, f"Expected pong, got: {pong_msg}")
+                                return False
+                            
+                    except asyncio.TimeoutError:
+                        continue
+                
+                if not server_ping_received:
+                    self.log_test("WebSocket Server Ping", False, "No server ping received within 25 seconds")
+                    return False
+                    
+        except Exception as e:
+            self.log_test("WebSocket Server Ping", False, f"Exception: {str(e)}")
+            return False
+
+    def run_websocket_tests(self):
+        """Run WebSocket tests using asyncio"""
+        print("🔌 Starting WebSocket Tests")
+        print("=" * 50)
+        
+        async def run_all_ws_tests():
+            tests = [
+                ("WebSocket Basic Connection & Ping/Pong", self.test_websocket_basic_connection),
+                ("WebSocket Room Flow", self.test_websocket_room_flow),
+                ("WebSocket Game Flow", self.test_websocket_game_flow),
+                ("WebSocket Server Ping (25s wait)", self.test_websocket_server_ping),
+            ]
+            
+            passed = 0
+            total = len(tests)
+            
+            for test_name, test_func in tests:
+                print(f"Running: {test_name}")
+                print("-" * 40)
+                try:
+                    result = await test_func()
+                    if result:
+                        passed += 1
+                except Exception as e:
+                    print(f"❌ FAIL {test_name} - Exception: {str(e)}")
+                print()
+            
+            return passed, total
+        
+        # Run async tests
+        try:
+            passed, total = asyncio.run(run_all_ws_tests())
+            print(f"📊 WEBSOCKET TEST SUMMARY: {passed}/{total} tests passed")
+            return passed == total
+        except Exception as e:
+            print(f"❌ WebSocket tests failed with exception: {str(e)}")
+            return False
     
     def run_all_tests(self):
         """Run all backend API tests"""
