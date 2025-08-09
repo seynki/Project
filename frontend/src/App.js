@@ -169,7 +169,7 @@ function AppContent() {
                 path="/"
                 element={
                   !players ? (
-                    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
+                    <div className={`min-h-screen bg-gradient-to-br ${subjectColors[selectedSubject]}`}>
                       <div className="container mx-auto px-6 py-8">
                         <div className="mb-6">
                           <button
@@ -191,6 +191,7 @@ function AppContent() {
                       players={players}
                       onBackToSetup={handleBackToSetup}
                       onGameEnd={handleGameEnd}
+                      subject={selectedSubject}
                     />
                   )
                 }
