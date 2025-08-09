@@ -313,10 +313,10 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd }) => {
             <div className="text-center">
               <div className="flex items-center gap-2 justify-center">
                 <Crown className="w-5 h-5 text-orange-600" />
-                <span className="font-bold text-lg text-orange-800">{players.player2}</span>
+                <span className="font-bold text-lg text-orange-800">Jogador O</span>
               </div>
               <Badge className="bg-orange-100 text-orange-800">
-                {globalScore[players.player2] || 0} pontos
+                {globalScore['Jogador O'] || 0} pontos
               </Badge>
             </div>
           </div>
