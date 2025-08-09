@@ -754,6 +754,15 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     if user_data is None:
         raise HTTPException(status_code=401, detail="Usuário não encontrado")
     return User(**user_data)
+@api_router.get("/rankings")
+async def get_global_rankings():
+    """Get global rankings"""
+    try:
+        rankings = await get_rankings()
+        return {"rankings": rankings}
+    except Exception as e:
+        logger.error(f"Error getting rankings: {e}")
+        raise HTTPException(status_code=500, detail="Error getting rankings")
 
 # Logging setup
 logging.basicConfig(level=logging.INFO)
