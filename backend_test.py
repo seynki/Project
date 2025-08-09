@@ -489,15 +489,20 @@ class TicTacToeAPITester:
             ws_url_b = f"wss://049635f0-6eb8-4a9b-8b77-1b9642323842.preview.emergentagent.com/api/ws/{player_id_b}"
             
             async with websockets.connect(ws_url_a) as ws_a, websockets.connect(ws_url_b) as ws_b:
-                # Initial setup
-                await ws_a.recv()  # connected message
-                await ws_b.recv()  # connected message
+                # Clear initial messages (connected, server pings, etc.)
+                for _ in range(5):
+                    try:
+                        await asyncio.wait_for(ws_a.recv(), timeout=1.0)
+                        await asyncio.wait_for(ws_b.recv(), timeout=1.0)
+                    except asyncio.TimeoutError:
+                        break
                 
+                # Join room
                 await ws_a.send(json.dumps({"type": "join_room", "room_code": room_code}))
                 await ws_b.send(json.dumps({"type": "join_room", "room_code": room_code}))
                 
-                # Clear initial messages
-                for _ in range(3):
+                # Clear join messages
+                for _ in range(5):
                     try:
                         await asyncio.wait_for(ws_a.recv(), timeout=1.0)
                         await asyncio.wait_for(ws_b.recv(), timeout=1.0)
@@ -512,16 +517,23 @@ class TicTacToeAPITester:
                 }))
                 
                 # Player A should receive question
-                question_response = await asyncio.wait_for(ws_a.recv(), timeout=5.0)
-                question_msg = json.loads(question_response)
+                question_received = False
+                question = None
                 
-                if question_msg.get("type") != "question":
-                    self.log_test("WebSocket Game Flow", False, f"Expected question, got: {question_msg}")
-                    return False
+                for _ in range(5):  # Try multiple times to get question
+                    try:
+                        question_response = await asyncio.wait_for(ws_a.recv(), timeout=3.0)
+                        question_msg = json.loads(question_response)
+                        
+                        if question_msg.get("type") == "question":
+                            question_received = True
+                            question = question_msg.get("question")
+                            break
+                    except asyncio.TimeoutError:
+                        continue
                 
-                question = question_msg.get("question")
-                if not question or "correctAnswer" not in question:
-                    self.log_test("WebSocket Game Flow", False, f"Invalid question format: {question}")
+                if not question_received or not question or "correctAnswer" not in question:
+                    self.log_test("WebSocket Game Flow", False, f"Failed to receive valid question. Received: {question}")
                     return False
                 
                 # Test make_move
@@ -534,18 +546,34 @@ class TicTacToeAPITester:
                 }))
                 
                 # Both players should receive game_update
-                update_a = await asyncio.wait_for(ws_a.recv(), timeout=5.0)
-                update_b = await asyncio.wait_for(ws_b.recv(), timeout=5.0)
+                game_update_a = False
+                game_update_b = False
                 
-                update_msg_a = json.loads(update_a)
-                update_msg_b = json.loads(update_b)
+                for _ in range(5):
+                    try:
+                        update_a = await asyncio.wait_for(ws_a.recv(), timeout=3.0)
+                        update_msg_a = json.loads(update_a)
+                        if update_msg_a.get("type") == "game_update":
+                            game_update_a = True
+                            break
+                    except asyncio.TimeoutError:
+                        continue
                 
-                if (update_msg_a.get("type") == "game_update" and 
-                    update_msg_b.get("type") == "game_update"):
+                for _ in range(5):
+                    try:
+                        update_b = await asyncio.wait_for(ws_b.recv(), timeout=3.0)
+                        update_msg_b = json.loads(update_b)
+                        if update_msg_b.get("type") == "game_update":
+                            game_update_b = True
+                            break
+                    except asyncio.TimeoutError:
+                        continue
+                
+                if game_update_a and game_update_b:
                     self.log_test("WebSocket Game Flow", True, f"Game flow working: question received, move made, both players got game_update")
                     return True
                 else:
-                    self.log_test("WebSocket Game Flow", False, f"Expected game_update, got A: {update_msg_a}, B: {update_msg_b}")
+                    self.log_test("WebSocket Game Flow", False, f"Missing game_update messages. A: {game_update_a}, B: {game_update_b}")
                     return False
                     
         except Exception as e:
