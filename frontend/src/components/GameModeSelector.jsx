@@ -5,7 +5,7 @@ import { Users, Globe, Play, Wifi } from 'lucide-react';
 
 const GameModeSelector = ({ onSelectMode }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-yellow-50 p-4 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4 flex items-center justify-center">
       <div className="w-full max-w-4xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-green-800 mb-2">
