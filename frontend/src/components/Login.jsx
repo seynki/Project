@@ -119,7 +119,7 @@ const Login = ({ onLoginSuccess }) => {
           <div>
             <input
               type="text"
-              placeholder="Nome"
+              placeholder="Digite apenas nomes de pessoas. Exemplo: João Silva, Maria Santos"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-3 rounded-full bg-white bg-opacity-90 border-0 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-gray-700 placeholder-gray-500"
