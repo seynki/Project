@@ -111,7 +111,7 @@ backend:
     file: "/app/backend/server.py"
     stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
@@ -134,6 +134,9 @@ backend:
       - working: true
         agent: "main"
         comment: "ADICIONADO: Keepalive no servidor (ping opcional) + logs detalhados; no frontend, heartbeat a cada 15s com watchdog de 45s e reconexão ilimitada com backoff e jitter. Estabilidade melhorada para redes Wi‑Fi com variação de latência."
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE WEBSOCKET TESTING COMPLETED: Todos os testes WebSocket passaram (4/4). Testado: 1) Conexão básica em /api/ws/{player_id} com mensagem 'connected' e ping/pong funcionando, 2) Fluxo completo de sala - criar sala, entrar sala, conectar 2 jogadores via WebSocket, ambos recebem room_state e player_joined, 3) Fluxo de jogo - get_question retorna pergunta válida, make_move com resposta correta gera game_update para ambos jogadores, 4) Server ping automático funcionando (~20s) com resposta pong correta. Sistema WebSocket totalmente estável e funcional."
 
   - task: "API para criar e entrar em salas"
     implemented: true
