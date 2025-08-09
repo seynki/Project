@@ -131,11 +131,11 @@ function AppContent() {
       'historia': 'from-yellow-50 to-orange-50',
       'quimica': 'from-purple-50 to-pink-50'
     };
-    // Game Mode Selection for História
+    // Game Mode Selection for selected subject
     if (gameMode === 'select') {
       return (
         <div className="App">
-          <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
+          <div className={`min-h-screen bg-gradient-to-br ${subjectColors[selectedSubject]}`}>
             <div className="container mx-auto px-6 py-8">
               <div className="mb-6">
                 <button
@@ -147,7 +147,7 @@ function AppContent() {
               </div>
               
               <div className="text-center mb-8">
-                <h1 className="text-4xl font-bold text-gray-800 mb-2">História do Brasil</h1>
+                <h1 className="text-4xl font-bold text-gray-800 mb-2">{subjectTitles[selectedSubject]}</h1>
                 <p className="text-gray-600 text-lg">Escolha o modo de jogo</p>
               </div>
               
