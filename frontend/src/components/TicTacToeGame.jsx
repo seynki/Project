@@ -202,7 +202,7 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd }) => {
     setLastAnswerInfo(null);
     toast({
       title: "Novo Jogo Iniciado!",
-      description: `${players.player1} (X) começa! Boa sorte com as perguntas sobre História do Brasil!`,
+      description: `Jogador X começa! Boa sorte com as perguntas sobre História do Brasil!`,
       duration: 2000,
     });
   };
