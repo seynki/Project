@@ -394,8 +394,9 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
       cellStyle += ' ring-4 ring-yellow-400 border-yellow-500';
     }
     
-    if (cellColor === 'red' && canClick) {
-      cellStyle += ' animate-pulse border-orange-400';
+    // Mantém vermelho estático para células erradas (sem animação)
+    if (cellColor === 'red') {
+      cellStyle += ' border-red-400';
     }
     
     return (
