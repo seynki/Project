@@ -207,7 +207,7 @@ function AppContent() {
     if (gameMode === 'online') {
       return (
         <div className="App">
-          <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
+          <div className={`min-h-screen bg-gradient-to-br ${subjectColors[selectedSubject]}`}>
             {!onlineRoom ? (
               <div className="container mx-auto px-6 py-8">
                 <div className="mb-6">
@@ -229,6 +229,7 @@ function AppContent() {
                 roomData={onlineRoom}
                 onBackToSetup={handleBackToSetup}
                 onDisconnect={handleOnlineDisconnect}
+                subject={selectedSubject}
               />
             )}
           </div>
