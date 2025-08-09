@@ -73,62 +73,71 @@ const GlobalRanking = ({ currentPlayers = null }) => {
       </CardHeader>
       
       <CardContent>
-        <div className="space-y-3 max-h-96 overflow-y-auto">
-          {mockRanking.map((player, index) => {
-            const position = index + 1;
-            const isCurrent = isCurrentPlayer(player.name);
-            
-            return (
-              <div
-                key={player.id}
-                className={`flex items-center justify-between p-3 rounded-lg border transition-all duration-200 ${
-                  isCurrent 
-                    ? 'bg-green-50 border-green-200 ring-2 ring-green-300' 
-                    : 'bg-white border-gray-200 hover:bg-gray-50'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  {getRankIcon(position)}
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className={`font-semibold ${isCurrent ? 'text-green-800' : 'text-gray-800'}`}>
-                        {player.name}
-                      </span>
-                      {isCurrent && (
-                        <Badge variant="outline" className="bg-green-100 text-green-700 text-xs">
-                          Jogando
-                        </Badge>
+        {loading ? (
+          <div className="flex justify-center items-center py-8">
+            <Loader2 className="w-8 h-8 animate-spin text-green-600" />
+            <span className="ml-2 text-gray-600">Carregando ranking...</span>
+          </div>
+        ) : (
+          <>
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {rankings.map((player, index) => {
+                const position = index + 1;
+                const isCurrent = isCurrentPlayer(player.name);
+                
+                return (
+                  <div
+                    key={player.id}
+                    className={`flex items-center justify-between p-3 rounded-lg border transition-all duration-200 ${
+                      isCurrent 
+                        ? 'bg-green-50 border-green-200 ring-2 ring-green-300' 
+                        : 'bg-white border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      {getRankIcon(position)}
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className={`font-semibold ${isCurrent ? 'text-green-800' : 'text-gray-800'}`}>
+                            {player.name}
+                          </span>
+                          {isCurrent && (
+                            <Badge variant="outline" className="bg-green-100 text-green-700 text-xs">
+                              Jogando
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {player.games} jogos • {player.wins} vitórias
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="text-right">
+                      <Badge className={`${getBadgeColor(position)} font-bold`}>
+                        {player.points} pts
+                      </Badge>
+                      {player.winRate && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          {player.winRate}% vitórias
+                        </div>
                       )}
                     </div>
-                    <div className="text-sm text-gray-500">
-                      {player.games} jogos • {player.wins} vitórias
-                    </div>
                   </div>
-                </div>
-                
-                <div className="text-right">
-                  <Badge className={`${getBadgeColor(position)} font-bold`}>
-                    {player.points} pts
-                  </Badge>
-                  {player.winRate && (
-                    <div className="text-xs text-gray-500 mt-1">
-                      {player.winRate}% vitórias
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        
-        <div className="mt-4 p-3 bg-blue-50 rounded-lg text-center">
-          <p className="text-sm text-blue-800">
-            <strong>{mockRanking.length}</strong> jogadores registrados
-          </p>
-          <p className="text-xs text-blue-600 mt-1">
-            Pontuação atualizada em tempo real
-          </p>
-        </div>
+                );
+              })}
+            </div>
+            
+            <div className="mt-4 p-3 bg-blue-50 rounded-lg text-center">
+              <p className="text-sm text-blue-800">
+                <strong>{rankings.length}</strong> jogadores registrados
+              </p>
+              <p className="text-xs text-blue-600 mt-1">
+                Pontuação atualizada em tempo real
+              </p>
+            </div>
+          </>
+        )}
       </CardContent>
     </Card>
   );
