@@ -16,6 +16,9 @@ const OnlineGameSetup = ({ onBackToModeSelect, onRoomCreated, onRoomJoined }) =>
 
   // Get player name from localStorage (login)
   const playerName = localStorage.getItem('username') || 'Usuário';
+  
+  // Debug logging to check what's in localStorage
+  console.log('Username from localStorage:', playerName);
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
