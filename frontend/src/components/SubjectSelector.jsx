@@ -27,6 +27,14 @@ const SubjectSelector = ({ onSelectSubject, onBack }) => {
       description: 'Fatos históricos do Brasil'
     },
     {
+      id: 'quimica',
+      name: 'Química',
+      emoji: '🧪',
+      color: 'purple',
+      available: true,
+      description: 'Elementos, reações e compostos'
+    },
+    {
       id: 'geografia',
       name: 'Geografia',
       emoji: '🌍',
