@@ -120,6 +120,18 @@ backend:
         agent: "testing"
         comment: "✅ AUTHENTICATION TESTING COMPLETED: Todos os endpoints de autenticação funcionando perfeitamente (4/4). Testado: 1) POST /api/auth/create-test-user - cria usuário 'admin' com senha '123456' corretamente, 2) POST /api/auth/login com credenciais corretas - retorna JWT token válido com estrutura correta (access_token, token_type=bearer, user_id, username), 3) POST /api/auth/login com credenciais incorretas - retorna 401 com mensagem de erro apropriada, 4) GET /api/ - health check funcionando. Sistema de autenticação totalmente funcional."
 
+  - task: "Sistema de registro de usuários"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ REGISTRATION SYSTEM TESTING COMPLETED: Todos os testes do sistema de registro passaram (5/5). Testado conforme solicitado: 1) POST /api/auth/register com dados válidos (username: testuser, password: 123456, confirm_password: 123456) - retorna JWT token após registro bem-sucedido, 2) Validação de senhas não coincidentes - retorna 400 com mensagem 'As senhas não coincidem', 3) Validação de senha muito curta (menos de 6 caracteres) - retorna 400 com mensagem 'A senha deve ter pelo menos 6 caracteres', 4) Tentativa de registro com username já existente (admin) - retorna 400 com mensagem 'Nome de usuário já existe', 5) Login com usuário recém-registrado - funciona perfeitamente retornando JWT token válido. Sistema de registro totalmente funcional."
+
   - task: "Sistema de salas online com WebSocket"
     implemented: true
     working: true
