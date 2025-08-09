@@ -637,13 +637,18 @@ class TicTacToeAPITester:
         
         # Summary
         print("=" * 80)
-        print(f"📊 TEST SUMMARY: {passed}/{total} tests passed")
+        print(f"📊 REST API TEST SUMMARY: {passed}/{total} tests passed")
         
-        if passed == total:
-            print("🎉 All tests passed! Backend APIs are working correctly.")
+        # Run WebSocket tests
+        ws_success = self.run_websocket_tests()
+        
+        # Final summary
+        print("=" * 80)
+        if passed == total and ws_success:
+            print("🎉 All tests passed! Backend APIs and WebSocket are working correctly.")
             return True
         else:
-            print(f"⚠️  {total - passed} tests failed. Check the details above.")
+            print(f"⚠️  Some tests failed. REST API: {passed}/{total}, WebSocket: {'✅' if ws_success else '❌'}")
             return False
 
 def main():
