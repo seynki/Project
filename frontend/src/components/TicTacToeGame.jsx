@@ -124,7 +124,7 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd }) => {
         }
       }));
       
-      const currentPlayerName = currentPlayer === 'X' ? players.player1 : players.player2;
+      const currentPlayerName = currentPlayer === 'X' ? 'Jogador X' : 'Jogador O';
       setLastAnswerInfo({
         isCorrect: false,
         player: currentPlayerName,
