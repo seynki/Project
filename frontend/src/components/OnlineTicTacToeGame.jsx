@@ -311,7 +311,7 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
         try { ws.current.close(1000, 'Component unmounted'); } catch (_) {}
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line
   }, []);
 
   const handleCellClick = (index) => {
