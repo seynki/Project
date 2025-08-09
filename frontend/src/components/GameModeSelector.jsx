@@ -58,7 +58,7 @@ const GameModeSelector = ({ onSelectMode }) => {
           </Card>
 
           {/* Online Game Mode */}
-          <Card className="shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
+          <Card className="shadow-xl hover:shadow-2xl transition-all duration-200 cursor-pointer border border-slate-200/70 backdrop-blur-sm bg-white/90">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl text-blue-800 flex items-center justify-center gap-2 mb-2">
                 <Globe className="w-8 h-8" />
