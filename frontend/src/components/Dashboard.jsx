@@ -45,15 +45,25 @@ const Dashboard = ({ user, onLogout, onSelectTicTacToe }) => {
           <div className="space-y-6">
             {/* Objetivos */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-              <div className="bg-blue-600 text-white px-6 py-4">
+              <div 
+                className="bg-blue-600 text-white px-6 py-4 cursor-pointer hover:bg-blue-700 transition-colors flex justify-between items-center"
+                onClick={() => toggleSection('objetivos')}
+              >
                 <h2 className="text-xl font-bold">Objetivos</h2>
+                {openSections.objetivos ? (
+                  <ChevronUp className="w-5 h-5" />
+                ) : (
+                  <ChevronDown className="w-5 h-5" />
+                )}
               </div>
-              <div className="p-6">
-                <p className="text-gray-700 leading-relaxed">
-                  Transformar o aprendizado em uma experiência interativa e envolvente,
-                  unindo diversão e conhecimento.
-                </p>
-              </div>
+              {openSections.objetivos && (
+                <div className="p-6">
+                  <p className="text-gray-700 leading-relaxed">
+                    Transformar o aprendizado em uma experiência interativa e envolvente,
+                    unindo diversão e conhecimento.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Propostas */}
