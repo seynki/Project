@@ -424,7 +424,7 @@ const OnlineGameSetup = ({ onBackToModeSelect, onRoomCreated, onRoomJoined }) =>
 
             <Button
               onClick={handleJoinRoom}
-              disabled={!playerName.trim() || !roomCode.trim() || loading}
+              disabled={!roomCode.trim() || loading}
               className="w-full text-lg py-3 bg-orange-600 hover:bg-orange-700 disabled:opacity-50"
             >
               {loading ? (
