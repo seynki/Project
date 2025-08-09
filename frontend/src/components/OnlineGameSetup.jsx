@@ -283,9 +283,6 @@ const OnlineGameSetup = ({ onBackToModeSelect, onRoomCreated, onRoomJoined }) =>
                     disabled={true}
                     readOnly
                   />
-                  <p className="text-sm text-green-600">
-                    Nome do usuário logado será usado automaticamente
-                  </p>
                 </div>
 
                 <div className="text-center p-4 bg-green-50 rounded-lg">
