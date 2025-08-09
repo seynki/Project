@@ -9,7 +9,7 @@ import requests
 import websockets
 import uuid
 
-BACKEND_URL = "https://8d3ce60d-c391-4f8b-94d7-e352daf87633.preview.emergentagent.com/api"
+BACKEND_URL = "https://008c7cc2-5bea-4019-8a48-a66e82e4e810.preview.emergentagent.com/api"
 
 async def test_sync_bug():
     """Test the reported synchronization bug"""
