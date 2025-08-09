@@ -5,7 +5,7 @@ import { Badge } from './ui/badge';
 import { Trophy, RotateCcw, CheckCircle, XCircle, Users, Crown, ArrowLeft, Wifi, WifiOff } from 'lucide-react';
 import { toast } from '../hooks/use-toast';
 
-const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect }) => {
+const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect, subject = 'historia' }) => {
   const [gameState, setGameState] = useState({
     board: Array(9).fill(null),
     boardColors: Array(9).fill(null),
