@@ -593,8 +593,18 @@ async def process_game_move(room_code: str, player_id: str, cell_index: int, sel
             if symbol == winner_symbol:
                 winner_player_id = pid
                 break
+        
+        # Update rankings for both players
+        for pid, player_name in room["players"].items():
+            is_winner = (pid == winner_player_id)
+            await update_player_ranking(pid, player_name, won=is_winner)
+            
     elif all(cell is not None for cell in board["board"]):
         board["game_status"] = "draw"
+        
+        # Update rankings for draw (both players get participation points)
+        for pid, player_name in room["players"].items():
+            await update_player_ranking(pid, player_name, won=False)
     else:
         # Switch turns
         current_symbol = room["player_symbols"][player_id]
