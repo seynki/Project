@@ -600,7 +600,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 async def get_user_by_username(username: str) -> Optional[User]:
     """Get user from database by username"""
-    user_data = await db.users.find_one({"username": username})
+    user_data = await db.users.find_one({"username": username.lower()})
     if user_data:
         return User(**user_data)
     return None
