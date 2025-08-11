@@ -476,7 +476,12 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd, subject = 'historia'
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {!currentQuestion ? (
+                {questionsLoading ? (
+                  <div className="text-center py-12">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Carregando questões...</p>
+                  </div>
+                ) : !currentQuestion ? (
                   <div className="text-center py-12">
                     <div className="text-6xl mb-4">
                       {subject === 'historia' && '🏛️'}
