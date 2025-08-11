@@ -120,16 +120,18 @@ function AppContent() {
     return <SubjectSelector onSelectSubject={handleSelectSubject} onBack={handleBackToDashboard} />;
   }
 
-  // Game views (História or Química)
-  if (currentView === 'game' && (selectedSubject === 'historia' || selectedSubject === 'quimica')) {
+  // Game views (História, Química ou Matemática)
+  if (currentView === 'game' && (selectedSubject === 'historia' || selectedSubject === 'quimica' || selectedSubject === 'matematica')) {
     const subjectTitles = {
       'historia': 'História do Brasil',
-      'quimica': 'Química'
+      'quimica': 'Química',
+      'matematica': 'Matemática'
     };
     
     const subjectColors = {
       'historia': 'from-yellow-50 to-orange-50',
-      'quimica': 'from-purple-50 to-pink-50'
+      'quimica': 'from-purple-50 to-pink-50',
+      'matematica': 'from-green-50 to-blue-50'
     };
     // Game Mode Selection for selected subject
     if (gameMode === 'select') {
