@@ -104,6 +104,42 @@
 
 user_problem_statement: "NOVA IMPLEMENTAÇÃO: adicionar um formulário de registro para novos usuários e colocar mais questões de história sobre o brasil muitas e química também não sei um número exato mas precisa de muito. PROBLEMA ANTERIOR RESOLVIDO: modo online teria um botão para criar sala e entrar em criar sala geraria um codigo onde quem quiser jogar precisa desse codigo assim jogando a distancia simultaneamente. NOVA CORREÇÃO 2025: Corrigir exibição de UUID no header e adicionar questões de matemática ao jogo da velha (que já tem química e história). PEDIDO ATUAL: Fazer página após login igual à imagem enviada (grid com 4 jogos), corrigir 'desafio de química' para aparecer dinamicamente conforme a matéria escolhida, e corrigir questões de matemática que não estavam carregando."
 
+  - task: "Corrigir título dinâmico nas telas de jogo"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/TicTacToeGame.jsx, /app/frontend/src/components/OnlineTicTacToeGame.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "CORRIGIDO: Removido título hardcoded 'Desafio de Química'. Agora o título muda dinamicamente: 'Desafio de História' (historia), 'Desafio de Química' (quimica), 'Desafio de Matemática' (matematica). Corrigidos emojis e descrições também. Implementado nos componentes TicTacToeGame.jsx e OnlineTicTacToeGame.jsx."
+
+  - task: "Corrigir carregamento de questões de matemática no modo local"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py, /app/frontend/src/components/TicTacToeGame.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "CORRIGIDO: Problema era que o modo local usava mock.js que só tinha questões de história, enquanto modo online usava backend com todas as matérias. SOLUÇÃO: 1) Criado endpoint GET /api/questions/{subject} no backend, 2) Atualizado TicTacToeGame.jsx para buscar questões do backend via API, 3) Adicionado fallback para mock.js em caso de erro. Agora modo local e online usam as mesmas questões do backend (60 História + 40 Química + 40 Matemática)."
+
+  - task: "Implementar novo dashboard baseado na imagem"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/Dashboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "IMPLEMENTADO: Novo layout do dashboard conforme imagem enviada. Layout alterado de 2 colunas para sidebar esquerda + grid 2x2 de jogos: 1) Jogo da Velha Educacional (azul), 2) Campo Minado do Saber (laranja), 3) Quiz Rápido Relâmpago (roxo), 4) Força Interativa (verde). Sidebar com menu: Objetivos, Propostas, Disciplinas, Jogos. Background gradiente azul. Seções expansíveis foram mantidas mas agora aparecem abaixo do grid."
+
   - task: "Adicionar questões de matemática"
     implemented: true
     working: true
