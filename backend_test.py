@@ -1631,10 +1631,13 @@ class TicTacToeAPITester:
         print("=" * 80)
         print()
         
-        # Test sequence - Focus on mathematics questions as requested
+        # Test sequence - Focus on new questions endpoint as requested
         tests = [
             ("API Health Check", self.test_api_health),
-            ("🧮 NEW: Mathematics Questions System", self.test_mathematics_questions_system),
+            ("🧮 NEW: Questions Endpoint - Matematica", self.test_questions_endpoint_matematica),
+            ("🧪 NEW: Questions Endpoint - Quimica", self.test_questions_endpoint_quimica),
+            ("📚 NEW: Questions Endpoint - Historia", self.test_questions_endpoint_historia),
+            ("❌ NEW: Questions Endpoint - Invalid Subject", self.test_questions_endpoint_invalid_subject),
             ("Create Test User", self.test_create_test_user),
             ("Login Correct Credentials", self.test_login_correct_credentials),
             ("Login Incorrect Credentials", self.test_login_incorrect_credentials),
@@ -1647,6 +1650,7 @@ class TicTacToeAPITester:
             ("Join Nonexistent Room", self.test_join_nonexistent_room),
             ("Join Full Room", self.test_join_full_room),
             ("Player Symbols and Game Flow", self.test_player_symbols),
+            ("🧮 Mathematics Questions System (WebSocket)", self.test_mathematics_questions_system),
             ("Expanded Questions System (Historia + Quimica)", self.test_questions_system),
         ]
         
