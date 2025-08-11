@@ -104,6 +104,30 @@
 
 user_problem_statement: "NOVA IMPLEMENTAÇÃO: adicionar um formulário de registro para novos usuários e colocar mais questões de história sobre o brasil muitas e química também não sei um número exato mas precisa de muito. PROBLEMA ANTERIOR RESOLVIDO: modo online teria um botão para criar sala e entrar em criar sala geraria um codigo onde quem quiser jogar precisa desse codigo assim jogando a distancia simultaneamente. NOVA CORREÇÃO 2025: Corrigir exibição de UUID no header e adicionar questões de matemática ao jogo da velha (que já tem química e história)."
 
+  - task: "Adicionar questões de matemática"
+    implemented: true
+    working: false
+    file: "/app/backend/questions.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implementado 40 questões de matemática variadas (aritmética, álgebra, geometria, frações, porcentagem, etc.) com IDs 201-240, subject='matematica'. Adicionadas ao array QUESTIONS e habilitada matemática no SubjectSelector.jsx."
+
+  - task: "Corrigir nome no header do dashboard"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/Dashboard.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Alterado header de {user.id || '124'} para {user.username || 'Usuário'} para exibir nome do usuário em vez do UUID longo."
+
 backend:
   - task: "Sistema de autenticação JWT"
     implemented: true
