@@ -433,7 +433,9 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd, subject = 'historia'
             <Card className="shadow-lg mt-6">
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl text-blue-800">
-                  Desafio de Química
+                  {subject === 'historia' && 'Desafio de História'}
+                  {subject === 'quimica' && 'Desafio de Química'}
+                  {subject === 'matematica' && 'Desafio de Matemática'}
                 </CardTitle>
               </CardHeader>
               <CardContent>
