@@ -521,6 +521,8 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                     # Set current question and selected cell based on subject
                     if subject == "quimica":
                         question = get_random_question(subject="quimica")
+                    elif subject == "matematica":
+                        question = get_random_question(subject="matematica")
                     else:  # default to historia
                         question = get_random_question(subject="historia")
                     
