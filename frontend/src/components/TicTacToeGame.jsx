@@ -7,7 +7,7 @@ import { toast } from '../hooks/use-toast';
 import { mockQuestions } from '../data/mock';
 import GlobalRanking from './GlobalRanking';
 
-const TicTacToeGame = ({ players, onBackToSetup, onGameEnd }) => {
+const TicTacToeGame = ({ players, onBackToSetup, onGameEnd, subject = 'historia' }) => {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [boardColors, setBoardColors] = useState(Array(9).fill(null)); // 'green' or 'red'
   const [currentPlayer, setCurrentPlayer] = useState('X');
