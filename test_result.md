@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "NOVA IMPLEMENTAÇÃO: adicionar um formulário de registro para novos usuários e colocar mais questões de história sobre o brasil muitas e química também não sei um número exato mas precisa de muito. PROBLEMA ANTERIOR RESOLVIDO: modo online teria um botão para criar sala e entrar em criar sala geraria um codigo onde quem quiser jogar precisa desse codigo assim jogando a distancia simultaneamente. NOVA CORREÇÃO 2025: Corrigir exibição de UUID no header e adicionar questões de matemática ao jogo da velha (que já tem química e história)."
+user_problem_statement: "NOVA IMPLEMENTAÇÃO: adicionar um formulário de registro para novos usuários e colocar mais questões de história sobre o brasil muitas e química também não sei um número exato mas precisa de muito. PROBLEMA ANTERIOR RESOLVIDO: modo online teria um botão para criar sala e entrar em criar sala geraria um codigo onde quem quiser jogar precisa desse codigo assim jogando a distancia simultaneamente. NOVA CORREÇÃO 2025: Corrigir exibição de UUID no header e adicionar questões de matemática ao jogo da velha (que já tem química e história). PEDIDO ATUAL: Fazer página após login igual à imagem enviada (grid com 4 jogos), corrigir 'desafio de química' para aparecer dinamicamente conforme a matéria escolhida, e corrigir questões de matemática que não estavam carregando."
 
   - task: "Adicionar questões de matemática"
     implemented: true
