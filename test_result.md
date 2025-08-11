@@ -121,15 +121,18 @@ user_problem_statement: "NOVA IMPLEMENTAÇÃO: adicionar um formulário de regis
 
   - task: "Corrigir nome no header do dashboard"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/src/components/Dashboard.jsx"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "main"
         comment: "Alterado header de {user.id || '124'} para {user.username || 'Usuário'} para exibir nome do usuário em vez do UUID longo."
+      - working: true
+        agent: "testing"
+        comment: "✅ HEADER FIX CONFIRMED: Verificado no código Dashboard.jsx linha 32 - header agora mostra {user.username || 'Usuário'} em vez do UUID longo. Correção implementada corretamente conforme solicitado."
 
 backend:
   - task: "Sistema de autenticação JWT"
