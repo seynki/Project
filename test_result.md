@@ -106,15 +106,18 @@ user_problem_statement: "NOVA IMPLEMENTAÇÃO: adicionar um formulário de regis
 
   - task: "Adicionar questões de matemática"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/questions.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "main"
         comment: "Implementado 40 questões de matemática variadas (aritmética, álgebra, geometria, frações, porcentagem, etc.) com IDs 201-240, subject='matematica'. Adicionadas ao array QUESTIONS e habilitada matemática no SubjectSelector.jsx."
+      - working: true
+        agent: "testing"
+        comment: "✅ MATHEMATICS QUESTIONS TESTING COMPLETED: Sistema de questões de matemática funcionando perfeitamente. Testado: 1) 40 questões de matemática implementadas com IDs 201-240, subject='matematica', 2) Backend server.py atualizado para suportar subject='matematica' no WebSocket get_question, 3) Testado via WebSocket - recebeu 10/10 questões únicas de matemática com 8 tópicos diferentes (Aritmética, Geometria, Álgebra, Porcentagem, Radiciação, etc.), 4) Sistema anti-repetição funcionando corretamente, 5) Total do sistema agora: 140 questões (60 História + 40 Química + 40 Matemática). Todas as questões têm estrutura válida e cobrem diversos tópicos matemáticos conforme solicitado."
 
   - task: "Corrigir nome no header do dashboard"
     implemented: true
