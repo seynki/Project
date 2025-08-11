@@ -791,13 +791,13 @@ class TicTacToeAPITester:
                         self.log_test("Questions Endpoint - Quimica", False, f"Question {i+1} correct answer not in options")
                         return False
                 
-                # Validate ID range (161-200 for chemistry questions)
+                # Validate ID range (101-140 for chemistry questions)
                 chemistry_ids = [q["id"] for q in questions]
-                if not all(161 <= qid <= 200 for qid in chemistry_ids):
-                    self.log_test("Questions Endpoint - Quimica", False, f"Chemistry question IDs not in expected range 161-200: {chemistry_ids[:5]}...")
+                if not all(101 <= qid <= 140 for qid in chemistry_ids):
+                    self.log_test("Questions Endpoint - Quimica", False, f"Chemistry question IDs not in expected range 101-140: {chemistry_ids[:5]}...")
                     return False
                 
-                self.log_test("Questions Endpoint - Quimica", True, f"Successfully retrieved 40 chemistry questions with correct structure and IDs 161-200")
+                self.log_test("Questions Endpoint - Quimica", True, f"Successfully retrieved 40 chemistry questions with correct structure and IDs 101-140")
                 return True
                 
             else:
