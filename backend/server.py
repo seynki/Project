@@ -298,6 +298,9 @@ async def get_questions_by_subject(subject: str):
             "questions": subject_questions,
             "total": len(subject_questions)
         }
+    except HTTPException:
+        # Re-raise HTTPExceptions (like 404) without catching them
+        raise
     except Exception as e:
         logging.error(f"Error getting questions for {subject}: {e}")
         raise HTTPException(status_code=500, detail="Erro interno do servidor")
