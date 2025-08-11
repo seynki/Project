@@ -208,7 +208,7 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd, subject = 'historia'
     setLastAnswerInfo(null);
     toast({
       title: "Novo Jogo Iniciado!",
-      description: `Jogador X começa! Boa sorte com as perguntas sobre História do Brasil!`,
+      description: `Jogador X começa! Boa sorte com as perguntas sobre ${subject === 'historia' ? 'História do Brasil' : subject === 'quimica' ? 'Química' : 'Matemática'}!`,
       duration: 2000,
     });
   };
