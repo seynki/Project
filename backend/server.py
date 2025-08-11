@@ -281,6 +281,27 @@ async def create_test_user():
 async def root():
     return {"message": "Tic-Tac-Toe Historical Game API"}
 
+@api_router.get("/questions/{subject}")
+async def get_questions_by_subject(subject: str):
+    """Get questions by subject for local games"""
+    try:
+        from questions import QUESTIONS
+        
+        # Filter questions by subject
+        subject_questions = [q for q in QUESTIONS if q.get("subject") == subject]
+        
+        if not subject_questions:
+            raise HTTPException(status_code=404, detail=f"No questions found for subject: {subject}")
+        
+        return {
+            "subject": subject,
+            "questions": subject_questions,
+            "total": len(subject_questions)
+        }
+    except Exception as e:
+        logging.error(f"Error getting questions for {subject}: {e}")
+        raise HTTPException(status_code=500, detail="Erro interno do servidor")
+
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
     status_dict = input.dict()
