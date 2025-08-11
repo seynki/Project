@@ -1179,6 +1179,119 @@ class TicTacToeAPITester:
             self.log_test("Room Creator Sync Bug", False, f"Exception during synchronization test: {str(e)}")
             return False
 
+    async def test_websocket_mathematics_questions(self):
+        """Test WebSocket get_question with subject='matematica'"""
+        try:
+            # Create room and join
+            room_data = self.test_create_room("MathTester1")
+            if not room_data:
+                return False
+            
+            room_code = room_data["room_code"]
+            player_id_a = room_data["player_id"]
+            
+            join_data = self.test_join_room(room_code, "MathTester2")
+            if not join_data:
+                return False
+            
+            player_id_b = join_data["player_id"]
+            
+            # Connect both players
+            ws_url_a = f"wss://75df1cfd-1040-4801-9fbf-292cca357ca2.preview.emergentagent.com/api/ws/{player_id_a}"
+            ws_url_b = f"wss://75df1cfd-1040-4801-9fbf-292cca357ca2.preview.emergentagent.com/api/ws/{player_id_b}"
+            
+            async with websockets.connect(ws_url_a) as ws_a, websockets.connect(ws_url_b) as ws_b:
+                # Clear initial messages
+                for _ in range(5):
+                    try:
+                        await asyncio.wait_for(ws_a.recv(), timeout=1.0)
+                        await asyncio.wait_for(ws_b.recv(), timeout=1.0)
+                    except asyncio.TimeoutError:
+                        break
+                
+                # Join room
+                await ws_a.send(json.dumps({"type": "join_room", "room_code": room_code}))
+                await ws_b.send(json.dumps({"type": "join_room", "room_code": room_code}))
+                
+                # Clear join messages
+                for _ in range(5):
+                    try:
+                        await asyncio.wait_for(ws_a.recv(), timeout=1.0)
+                        await asyncio.wait_for(ws_b.recv(), timeout=1.0)
+                    except asyncio.TimeoutError:
+                        break
+                
+                # Test get_question with subject='matematica'
+                await ws_a.send(json.dumps({
+                    "type": "get_question",
+                    "room_code": room_code,
+                    "cell_index": 0,
+                    "subject": "matematica"
+                }))
+                
+                # Player A should receive mathematics question
+                math_question_received = False
+                question = None
+                
+                for _ in range(5):
+                    try:
+                        question_response = await asyncio.wait_for(ws_a.recv(), timeout=3.0)
+                        question_msg = json.loads(question_response)
+                        
+                        if question_msg.get("type") == "question":
+                            question = question_msg.get("question")
+                            subject = question_msg.get("subject")
+                            
+                            # Verify it's a mathematics question
+                            if (question and 
+                                question.get("subject") == "matematica" and 
+                                subject == "matematica" and
+                                200 <= question.get("id", 0) <= 240):
+                                math_question_received = True
+                                break
+                    except asyncio.TimeoutError:
+                        continue
+                
+                if not math_question_received:
+                    self.log_test("WebSocket Mathematics Questions", False, f"Failed to receive valid mathematics question. Got: {question}")
+                    return False
+                
+                # Test multiple mathematics questions for variety
+                math_questions_ids = [question["id"]]
+                
+                for i in range(4):  # Get 4 more questions
+                    await ws_a.send(json.dumps({
+                        "type": "get_question",
+                        "room_code": room_code,
+                        "cell_index": i + 1,
+                        "subject": "matematica"
+                    }))
+                    
+                    for _ in range(5):
+                        try:
+                            response = await asyncio.wait_for(ws_a.recv(), timeout=3.0)
+                            msg = json.loads(response)
+                            
+                            if msg.get("type") == "question":
+                                q = msg.get("question")
+                                if q and q.get("subject") == "matematica":
+                                    math_questions_ids.append(q["id"])
+                                    break
+                        except asyncio.TimeoutError:
+                            continue
+                
+                unique_questions = len(set(math_questions_ids))
+                if unique_questions < 4:  # At least 4 different questions
+                    self.log_test("WebSocket Mathematics Questions", False, f"Only {unique_questions} unique math questions out of 5: {math_questions_ids}")
+                    return False
+                
+                self.log_test("WebSocket Mathematics Questions", True, f"Successfully received {unique_questions} unique mathematics questions via WebSocket: {math_questions_ids}")
+                return True
+                    
+        except Exception as e:
+            self.log_test("WebSocket Mathematics Questions", False, f"Exception: {str(e)}")
+            return False
+
     def run_websocket_tests(self):
         """Run WebSocket tests using asyncio"""
         print("🔌 Starting WebSocket Tests")
@@ -1189,6 +1302,7 @@ class TicTacToeAPITester:
                 ("WebSocket Basic Connection & Ping/Pong", self.test_websocket_basic_connection),
                 ("WebSocket Room Flow", self.test_websocket_room_flow),
                 ("WebSocket Game Flow", self.test_websocket_game_flow),
+                ("🧮 WebSocket Mathematics Questions", self.test_websocket_mathematics_questions),
                 ("WebSocket Server Ping (25s wait)", self.test_websocket_server_ping),
                 ("🔍 ROOM CREATOR SYNCHRONIZATION BUG TEST", self.test_room_creator_synchronization_bug),
             ]
