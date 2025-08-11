@@ -122,11 +122,14 @@ user_problem_statement: "NOVA IMPLEMENTAÇÃO: adicionar um formulário de regis
     file: "/app/backend/server.py, /app/frontend/src/components/TicTacToeGame.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "CORRIGIDO: Problema era que o modo local usava mock.js que só tinha questões de história, enquanto modo online usava backend com todas as matérias. SOLUÇÃO: 1) Criado endpoint GET /api/questions/{subject} no backend, 2) Atualizado TicTacToeGame.jsx para buscar questões do backend via API, 3) Adicionado fallback para mock.js em caso de erro. Agora modo local e online usam as mesmas questões do backend (60 História + 40 Química + 40 Matemática)."
+      - working: true
+        agent: "testing"
+        comment: "✅ NEW QUESTIONS ENDPOINT TESTING COMPLETED: Testado novo endpoint GET /api/questions/{subject} conforme solicitado na review. RESULTADOS: 1) GET /api/questions/matematica - ✅ retorna exatamente 40 questões de matemática (IDs 201-240), 2) GET /api/questions/quimica - ✅ retorna exatamente 40 questões de química (IDs 101-140), 3) GET /api/questions/historia - ✅ retorna exatamente 60 questões de história (IDs 1-60), 4) GET /api/questions/invalida - ✅ retorna 404 conforme esperado, 5) Todas as questões têm estrutura correta com campos: id, question, options, correctAnswer, period, subject. Endpoint funcionando perfeitamente para resolver problema do modo local que não conseguia carregar questões de matemática."
 
   - task: "Implementar novo dashboard baseado na imagem"
     implemented: true
