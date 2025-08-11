@@ -409,8 +409,7 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Corrigir nome no header do dashboard"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -430,7 +429,6 @@ agent_communication:
     message: "NOVO BUG REPORTADO: 'criador da sala vê 1/2 e não consegue jogar enquanto o outro vê 2/2 esperando o criador' - problema de sincronização entre jogadores onde contagem de players diverge"
   - agent: "testing"
     message: "✅ SYNCHRONIZATION BUG TESTING COMPLETED: Executado teste focado no bug reportado. RESULTADO: BUG NÃO CONFIRMADO. Teste detalhado mostrou: 1) Criador da sala (TesterA) vê corretamente 2/2 jogadores após segundo player entrar, 2) Segundo jogador (TesterB) também vê 2/2 jogadores, 3) current_player_id está corretamente definido como o criador (símbolo X), 4) Criador consegue solicitar get_question e receber pergunta válida, 5) Ambos jogadores recebem eventos player_joined e room_state consistentes. Sistema de sincronização funcionando corretamente - não há discrepância de contagem de jogadores ou current_player_id nulo. Possível que o bug tenha sido corrigido nas implementações anteriores do main agent."
-agent_communication:
   - agent: "main"
     message: "✅ CORREÇÃO DO FRONTEND IMPLEMENTADA: Identificado e corrigido problema no App.js onde botão de matemática não funcionava. CAUSA: handleSelectSubject() só aceitava 'historia' e 'quimica', não incluía 'matematica'. CORREÇÃO: 1) Atualizada função handleSelectSubject para aceitar 'matematica', 2) Atualizada condição de view para incluir matemática, 3) Adicionados título 'Matemática' e cor 'from-green-50 to-blue-50' nos objetos subjectTitles e subjectColors. Sistema completo agora funcional: Header com nome do usuário + 140 questões (60 História + 40 Química + 40 Matemática) + Frontend permitindo seleção de todas as 3 matérias."
   - agent: "testing"
@@ -439,3 +437,5 @@ agent_communication:
     message: "✅ NEW FEATURES TESTING COMPLETED: Testado novo sistema de registro de usuários e sistema de questões expandido conforme solicitado. RESULTADOS: 1) Sistema de Registro - Todos os 5 testes passaram: registro válido com JWT token, validação de senhas não coincidentes, validação de senha curta, validação de username existente, login com usuário registrado. 2) Sistema de Questões Expandido - Funcionando perfeitamente com 60+ questões de história e 40+ questões de química, get_random_question funciona corretamente para ambas as matérias. 3) Integração - Sistema de autenticação existente (admin/123456) continua funcionando normalmente. 4) WebSocket - Todos os 5 testes WebSocket passaram após correção de URL. Sistema completo totalmente funcional com todas as novas funcionalidades implementadas."
   - agent: "testing"
     message: "✅ MUDANÇAS IMPLEMENTADAS TESTADAS: Testei as 4 mudanças solicitadas no jogo educativo: 1) Dashboard com gavetas expansíveis - ✅ CONFIRMADO: Seções 'Objetivos', 'Propostas' e 'Disciplinas' são clicáveis e expansíveis, conteúdo aparece/desaparece corretamente ao clicar. 2) Mudança 'Pergunta Histórica' → 'Desafio de Química' - ✅ CONFIRMADO: Título alterado em ambos TicTacToeGame.jsx (linha 430) e OnlineTicTacToeGame.jsx (linha 568). 3) Remoção status 'Conectado' duplicado - ✅ CONFIRMADO: Apenas badge de conexão no topo permanece, seção duplicada no painel removida. 4) Mudança 'conectados' → 'jogadores' - ✅ CONFIRMADO: OnlineTicTacToeGame.jsx linha 661 mostra 'X/2 jogadores' em vez de 'conectados'. Todas as mudanças implementadas corretamente conforme solicitado."
+  - agent: "testing"
+    message: "✅ NEW QUESTIONS ENDPOINT TESTING COMPLETED: Testado novo endpoint GET /api/questions/{subject} conforme solicitado na review específica. RESULTADOS COMPLETOS: 1) GET /api/questions/matematica - ✅ PASSOU: retorna exatamente 40 questões de matemática com IDs 201-240, estrutura correta (id, question, options, correctAnswer, period, subject), 2) GET /api/questions/quimica - ✅ PASSOU: retorna exatamente 40 questões de química com IDs 101-140, estrutura correta, 3) GET /api/questions/historia - ✅ PASSOU: retorna exatamente 60 questões de história com IDs 1-60, estrutura correta, 4) GET /api/questions/invalida - ✅ PASSOU: retorna 404 conforme esperado com mensagem 'No questions found for subject: invalida', 5) Todas as questões validadas com campos obrigatórios e correctAnswer presente nas options. Endpoint funcionando perfeitamente para resolver problema onde modo local não conseguia carregar questões de matemática porque usava mock.js local em vez das questões do backend. Sistema agora unificado."
