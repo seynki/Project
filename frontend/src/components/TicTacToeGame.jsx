@@ -100,7 +100,7 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd, subject = 'historia'
   };
 
   const handleCellClick = (index) => {
-    if (gameStatus !== 'playing' || currentQuestion) {
+    if (gameStatus !== 'playing' || currentQuestion || questionsLoading) {
       return;
     }
 
