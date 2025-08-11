@@ -30,6 +30,40 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd, subject = 'historia'
   const [subjectQuestions, setSubjectQuestions] = useState([]);
   const [questionsLoading, setQuestionsLoading] = useState(true);
 
+  // Load questions when component mounts or subject changes
+  useEffect(() => {
+    const loadSubjectQuestions = async () => {
+      try {
+        setQuestionsLoading(true);
+        const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+        const response = await fetch(`${backendUrl}/api/questions/${subject}`);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch questions: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setSubjectQuestions(data.questions);
+        setUsedQuestions([]); // Reset used questions when switching subjects
+      } catch (error) {
+        console.error('Error loading questions:', error);
+        toast({
+          title: "Erro ao carregar questões",
+          description: "Tentando usar questões locais como fallback",
+          variant: "destructive",
+          duration: 3000
+        });
+        // Fallback to mock questions if backend fails
+        const subjectMockQuestions = mockQuestions.filter(q => q.subject === subject);
+        setSubjectQuestions(subjectMockQuestions.length > 0 ? subjectMockQuestions : mockQuestions);
+      } finally {
+        setQuestionsLoading(false);
+      }
+    };
+
+    loadSubjectQuestions();
+  }, [subject]);
+
   const winningLines = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
     [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
