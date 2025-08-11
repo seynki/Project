@@ -27,6 +27,8 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd, subject = 'historia'
   const [showAnswer, setShowAnswer] = useState(false);
   const [usedQuestions, setUsedQuestions] = useState([]);
   const [lastAnswerInfo, setLastAnswerInfo] = useState(null);
+  const [subjectQuestions, setSubjectQuestions] = useState([]);
+  const [questionsLoading, setQuestionsLoading] = useState(true);
 
   const winningLines = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
