@@ -360,9 +360,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Adicionar questões de matemática"
     - "Corrigir nome no header do dashboard"
-    - "Sistema de questões expandido (História + Química + Matemática)"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
