@@ -466,7 +466,9 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect, subject = 
             Jogo da Velha Online
           </h1>
           <p className="text-gray-600 mb-2">
-            Química • Jogo em Tempo Real
+            {subject === 'historia' && 'História • Jogo em Tempo Real'}
+            {subject === 'quimica' && 'Química • Jogo em Tempo Real'}
+            {subject === 'matematica' && 'Matemática • Jogo em Tempo Real'}
           </p>
 
           {waitingForPlayer ? (
