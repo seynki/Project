@@ -87,8 +87,7 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd, subject = 'historia'
   };
 
   const getRandomQuestion = () => {
-    // Filter questions by subject
-    const subjectQuestions = mockQuestions.filter(q => q.subject === subject);
+    // Use loaded subject questions instead of filtering mockQuestions
     const availableQuestions = subjectQuestions.filter(q => !usedQuestions.includes(q.id));
     
     if (availableQuestions.length === 0) {
