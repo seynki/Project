@@ -808,8 +808,332 @@ CHEMISTRY_QUESTIONS = [
     }
 ]
 
+# Mathematics Questions
+MATH_QUESTIONS = [
+    {
+        "id": 201,
+        "question": "Quanto é 15 + 27?",
+        "options": ["40", "41", "42", "43"],
+        "correctAnswer": "42",
+        "period": "Aritmética",
+        "subject": "matematica"
+    },
+    {
+        "id": 202,
+        "question": "Qual é o resultado de 8 × 9?",
+        "options": ["71", "72", "73", "74"],
+        "correctAnswer": "72",
+        "period": "Aritmética",
+        "subject": "matematica"
+    },
+    {
+        "id": 203,
+        "question": "Quanto é 144 ÷ 12?",
+        "options": ["11", "12", "13", "14"],
+        "correctAnswer": "12",
+        "period": "Aritmética",
+        "subject": "matematica"
+    },
+    {
+        "id": 204,
+        "question": "Qual é a raiz quadrada de 64?",
+        "options": ["6", "7", "8", "9"],
+        "correctAnswer": "8",
+        "period": "Radiciação",
+        "subject": "matematica"
+    },
+    {
+        "id": 205,
+        "question": "Quanto é 5²?",
+        "options": ["20", "25", "30", "35"],
+        "correctAnswer": "25",
+        "period": "Potenciação",
+        "subject": "matematica"
+    },
+    {
+        "id": 206,
+        "question": "Se x + 12 = 20, qual é o valor de x?",
+        "options": ["6", "7", "8", "9"],
+        "correctAnswer": "8",
+        "period": "Álgebra",
+        "subject": "matematica"
+    },
+    {
+        "id": 207,
+        "question": "Qual é o perímetro de um quadrado com lado de 5 cm?",
+        "options": ["15 cm", "20 cm", "25 cm", "30 cm"],
+        "correctAnswer": "20 cm",
+        "period": "Geometria",
+        "subject": "matematica"
+    },
+    {
+        "id": 208,
+        "question": "Qual é a área de um retângulo de 6 cm × 4 cm?",
+        "options": ["20 cm²", "22 cm²", "24 cm²", "26 cm²"],
+        "correctAnswer": "24 cm²",
+        "period": "Geometria",
+        "subject": "matematica"
+    },
+    {
+        "id": 209,
+        "question": "Quantos graus tem um ângulo reto?",
+        "options": ["45°", "60°", "90°", "180°"],
+        "correctAnswer": "90°",
+        "period": "Geometria",
+        "subject": "matematica"
+    },
+    {
+        "id": 210,
+        "question": "Qual é 20% de 150?",
+        "options": ["25", "30", "35", "40"],
+        "correctAnswer": "30",
+        "period": "Porcentagem",
+        "subject": "matematica"
+    },
+    {
+        "id": 211,
+        "question": "Se 3x = 21, qual é o valor de x?",
+        "options": ["6", "7", "8", "9"],
+        "correctAnswer": "7",
+        "period": "Álgebra",
+        "subject": "matematica"
+    },
+    {
+        "id": 212,
+        "question": "Qual é o resultado de (-5) + 8?",
+        "options": ["2", "3", "4", "13"],
+        "correctAnswer": "3",
+        "period": "Números Inteiros",
+        "subject": "matematica"
+    },
+    {
+        "id": 213,
+        "question": "Quantos lados tem um hexágono?",
+        "options": ["5", "6", "7", "8"],
+        "correctAnswer": "6",
+        "period": "Geometria",
+        "subject": "matematica"
+    },
+    {
+        "id": 214,
+        "question": "Qual é o valor de π (pi) aproximadamente?",
+        "options": ["3,14", "3,41", "4,13", "4,31"],
+        "correctAnswer": "3,14",
+        "period": "Geometria",
+        "subject": "matematica"
+    },
+    {
+        "id": 215,
+        "question": "Se um produto custa R$ 80 e tem 25% de desconto, qual é o preço final?",
+        "options": ["R$ 55", "R$ 60", "R$ 65", "R$ 70"],
+        "correctAnswer": "R$ 60",
+        "period": "Porcentagem",
+        "subject": "matematica"
+    },
+    {
+        "id": 216,
+        "question": "Qual é a soma dos ângulos internos de um triângulo?",
+        "options": ["90°", "180°", "270°", "360°"],
+        "correctAnswer": "180°",
+        "period": "Geometria",
+        "subject": "matematica"
+    },
+    {
+        "id": 217,
+        "question": "Quanto é 2³?",
+        "options": ["6", "8", "9", "16"],
+        "correctAnswer": "8",
+        "period": "Potenciação",
+        "subject": "matematica"
+    },
+    {
+        "id": 218,
+        "question": "Se uma pizza é dividida em 8 fatias e você comeu 3, que fração da pizza você comeu?",
+        "options": ["3/5", "3/8", "5/8", "8/3"],
+        "correctAnswer": "3/8",
+        "period": "Frações",
+        "subject": "matematica"
+    },
+    {
+        "id": 219,
+        "question": "Qual é o resultado de 7 × (-4)?",
+        "options": ["-28", "-24", "24", "28"],
+        "correctAnswer": "-28",
+        "period": "Números Inteiros",
+        "subject": "matematica"
+    },
+    {
+        "id": 220,
+        "question": "Quantos minutos há em 2 horas e 30 minutos?",
+        "options": ["120", "130", "140", "150"],
+        "correctAnswer": "150",
+        "period": "Medidas de Tempo",
+        "subject": "matematica"
+    },
+    {
+        "id": 221,
+        "question": "Qual é a média aritmética de 10, 15 e 20?",
+        "options": ["15", "16", "17", "18"],
+        "correctAnswer": "15",
+        "period": "Estatística",
+        "subject": "matematica"
+    },
+    {
+        "id": 222,
+        "question": "Se 2x - 5 = 11, qual é o valor de x?",
+        "options": ["6", "7", "8", "9"],
+        "correctAnswer": "8",
+        "period": "Álgebra",
+        "subject": "matematica"
+    },
+    {
+        "id": 223,
+        "question": "Qual é a área de um círculo com raio de 3 cm? (Use π = 3,14)",
+        "options": ["28,26 cm²", "28,27 cm²", "28,28 cm²", "28,29 cm²"],
+        "correctAnswer": "28,26 cm²",
+        "period": "Geometria",
+        "subject": "matematica"
+    },
+    {
+        "id": 224,
+        "question": "Quantos graus tem um ângulo de meia volta?",
+        "options": ["90°", "180°", "270°", "360°"],
+        "correctAnswer": "180°",
+        "period": "Geometria",
+        "subject": "matematica"
+    },
+    {
+        "id": 225,
+        "question": "Qual é o resultado de 15% + 25%?",
+        "options": ["35%", "40%", "45%", "50%"],
+        "correctAnswer": "40%",
+        "period": "Porcentagem",
+        "subject": "matematica"
+    },
+    {
+        "id": 226,
+        "question": "Se um triângulo tem lados de 3, 4 e 5 cm, qual é seu perímetro?",
+        "options": ["10 cm", "11 cm", "12 cm", "13 cm"],
+        "correctAnswer": "12 cm",
+        "period": "Geometria",
+        "subject": "matematica"
+    },
+    {
+        "id": 227,
+        "question": "Qual é a raiz cúbica de 27?",
+        "options": ["2", "3", "4", "9"],
+        "correctAnswer": "3",
+        "period": "Radiciação",
+        "subject": "matematica"
+    },
+    {
+        "id": 228,
+        "question": "Se você tem 24 balas para dividir igualmente entre 6 crianças, quantas balas cada uma recebe?",
+        "options": ["3", "4", "5", "6"],
+        "correctAnswer": "4",
+        "period": "Divisão",
+        "subject": "matematica"
+    },
+    {
+        "id": 229,
+        "question": "Qual é o valor de |−15|? (módulo de -15)",
+        "options": ["-15", "0", "15", "30"],
+        "correctAnswer": "15",
+        "period": "Números Inteiros",
+        "subject": "matematica"
+    },
+    {
+        "id": 230,
+        "question": "Se uma corrida tem 42,195 km, quantos metros são?",
+        "options": ["4219,5 m", "42195 m", "421950 m", "4219500 m"],
+        "correctAnswer": "42195 m",
+        "period": "Sistema Métrico",
+        "subject": "matematica"
+    },
+    {
+        "id": 231,
+        "question": "Qual é o máximo divisor comum (MDC) de 12 e 18?",
+        "options": ["2", "3", "6", "9"],
+        "correctAnswer": "6",
+        "period": "Divisibilidade",
+        "subject": "matematica"
+    },
+    {
+        "id": 232,
+        "question": "Se x² = 49, quais são os possíveis valores de x?",
+        "options": ["7", "-7", "7 e -7", "49"],
+        "correctAnswer": "7 e -7",
+        "period": "Equações",
+        "subject": "matematica"
+    },
+    {
+        "id": 233,
+        "question": "Quantos centímetros há em 2,5 metros?",
+        "options": ["25 cm", "250 cm", "2500 cm", "25000 cm"],
+        "correctAnswer": "250 cm",
+        "period": "Sistema Métrico",
+        "subject": "matematica"
+    },
+    {
+        "id": 234,
+        "question": "Qual é o resultado de 3/4 + 1/4?",
+        "options": ["4/8", "4/4", "1", "2"],
+        "correctAnswer": "1",
+        "period": "Frações",
+        "subject": "matematica"
+    },
+    {
+        "id": 235,
+        "question": "Se um número é divisível por 2 e por 3, também é divisível por qual número?",
+        "options": ["5", "6", "8", "9"],
+        "correctAnswer": "6",
+        "period": "Divisibilidade",
+        "subject": "matematica"
+    },
+    {
+        "id": 236,
+        "question": "Qual é o resultado de 10²?",
+        "options": ["20", "100", "200", "1000"],
+        "correctAnswer": "100",
+        "period": "Potenciação",
+        "subject": "matematica"
+    },
+    {
+        "id": 237,
+        "question": "Se um relógio marca 15:30, que horas são no formato 12 horas?",
+        "options": ["3:30 AM", "3:30 PM", "15:30 AM", "15:30 PM"],
+        "correctAnswer": "3:30 PM",
+        "period": "Medidas de Tempo",
+        "subject": "matematica"
+    },
+    {
+        "id": 238,
+        "question": "Qual é o menor múltiplo comum (MMC) de 4 e 6?",
+        "options": ["10", "12", "18", "24"],
+        "correctAnswer": "12",
+        "period": "Divisibilidade",
+        "subject": "matematica"
+    },
+    {
+        "id": 239,
+        "question": "Se você tem um ângulo de 45° e adiciona 30°, qual é o ângulo resultante?",
+        "options": ["65°", "70°", "75°", "80°"],
+        "correctAnswer": "75°",
+        "period": "Geometria",
+        "subject": "matematica"
+    },
+    {
+        "id": 240,
+        "question": "Qual é o valor de 0,5 em fração?",
+        "options": ["1/2", "1/3", "2/3", "5/10"],
+        "correctAnswer": "1/2",
+        "period": "Frações e Decimais",
+        "subject": "matematica"
+    }
+]
+
 # Combine all questions
-QUESTIONS = HISTORY_QUESTIONS + CHEMISTRY_QUESTIONS
+QUESTIONS = HISTORY_QUESTIONS + CHEMISTRY_QUESTIONS + MATH_QUESTIONS
 
 used_questions = {}
 
