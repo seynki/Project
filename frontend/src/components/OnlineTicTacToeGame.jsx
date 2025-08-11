@@ -573,7 +573,11 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect, subject = 
               <CardContent>
                 {!currentQuestion ? (
                   <div className="text-center py-12">
-                    <div className="text-6xl mb-4">🏛️</div>
+                    <div className="text-6xl mb-4">
+                      {subject === 'historia' && '🏛️'}
+                      {subject === 'quimica' && '🧪'}
+                      {subject === 'matematica' && '🔢'}
+                    </div>
                     {waitingForPlayer ? (
                       <>
                         <h3 className="text-xl font-semibold text-gray-700 mb-2">
