@@ -16,7 +16,7 @@ from typing import Dict, Any
 from concurrent.futures import ThreadPoolExecutor
 
 # Get backend URL from environment
-BACKEND_URL = "https://75df1cfd-1040-4801-9fbf-292cca357ca2.preview.emergentagent.com/api"
+BACKEND_URL = "https://ad83760d-e81a-41cd-b60e-665aa8a1808b.preview.emergentagent.com/api"
 WS_URL = "wss://75df1cfd-1040-4801-9fbf-292cca357ca2.preview.emergentagent.com/api/ws"
 
 class TicTacToeAPITester:
