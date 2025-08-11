@@ -15,7 +15,7 @@ const SubjectSelector = ({ onSelectSubject, onBack }) => {
       name: 'Matemática',
       emoji: '🔢',
       color: 'green',
-      available: false,
+      available: true,
       description: 'Números, operações e raciocínio'
     },
     {
