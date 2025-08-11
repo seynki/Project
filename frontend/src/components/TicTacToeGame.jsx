@@ -51,9 +51,15 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd, subject = 'historia'
   };
 
   const getRandomQuestion = () => {
-    const availableQuestions = mockQuestions.filter(q => !usedQuestions.includes(q.id));
+    // Filter questions by subject
+    const subjectQuestions = mockQuestions.filter(q => q.subject === subject);
+    const availableQuestions = subjectQuestions.filter(q => !usedQuestions.includes(q.id));
+    
     if (availableQuestions.length === 0) {
-      return mockQuestions[Math.floor(Math.random() * mockQuestions.length)];
+      // If no unused questions, pick any from the subject
+      return subjectQuestions.length > 0 
+        ? subjectQuestions[Math.floor(Math.random() * subjectQuestions.length)]
+        : mockQuestions[Math.floor(Math.random() * mockQuestions.length)];
     }
     return availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
   };
