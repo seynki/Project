@@ -29,7 +29,7 @@ const Dashboard = ({ user, onLogout, onSelectTicTacToe }) => {
           <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center mr-3">
             <span className="text-blue-600 font-bold text-lg">👤</span>
           </div>
-          <span className="font-semibold">{user.id || '124'} | Conta Geral Ensino</span>
+          <span className="font-semibold">{user.username || 'Usuário'} | Conta Geral Ensino</span>
         </div>
         <button
           onClick={handleLogout}
