@@ -662,6 +662,249 @@ class TicTacToeAPITester:
             self.log_test("Login with Registered User", False, f"Exception: {str(e)}")
             return False
 
+    def test_questions_endpoint_matematica(self):
+        """Test GET /api/questions/matematica - should return 40 math questions"""
+        try:
+            response = self.session.get(f"{BACKEND_URL}/questions/matematica")
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Validate response structure
+                required_fields = ["subject", "questions", "total"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    self.log_test("Questions Endpoint - Matematica", False, f"Missing fields: {missing_fields}", data)
+                    return False
+                
+                # Validate subject
+                if data["subject"] != "matematica":
+                    self.log_test("Questions Endpoint - Matematica", False, f"Expected subject 'matematica', got '{data['subject']}'")
+                    return False
+                
+                # Validate total count
+                if data["total"] != 40:
+                    self.log_test("Questions Endpoint - Matematica", False, f"Expected 40 math questions, got {data['total']}")
+                    return False
+                
+                # Validate questions array
+                questions = data["questions"]
+                if len(questions) != 40:
+                    self.log_test("Questions Endpoint - Matematica", False, f"Expected 40 questions in array, got {len(questions)}")
+                    return False
+                
+                # Validate question structure
+                for i, question in enumerate(questions[:5]):  # Check first 5 questions
+                    required_q_fields = ["id", "question", "options", "correctAnswer", "period", "subject"]
+                    missing_q_fields = [field for field in required_q_fields if field not in question]
+                    
+                    if missing_q_fields:
+                        self.log_test("Questions Endpoint - Matematica", False, f"Question {i+1} missing fields: {missing_q_fields}")
+                        return False
+                    
+                    # Validate subject is matematica
+                    if question["subject"] != "matematica":
+                        self.log_test("Questions Endpoint - Matematica", False, f"Question {i+1} has wrong subject: {question['subject']}")
+                        return False
+                    
+                    # Validate options format
+                    if not isinstance(question["options"], list) or len(question["options"]) != 4:
+                        self.log_test("Questions Endpoint - Matematica", False, f"Question {i+1} has invalid options format")
+                        return False
+                    
+                    # Validate correct answer is in options
+                    if question["correctAnswer"] not in question["options"]:
+                        self.log_test("Questions Endpoint - Matematica", False, f"Question {i+1} correct answer not in options")
+                        return False
+                
+                # Validate ID range (201-240 for math questions)
+                math_ids = [q["id"] for q in questions]
+                if not all(201 <= qid <= 240 for qid in math_ids):
+                    self.log_test("Questions Endpoint - Matematica", False, f"Math question IDs not in expected range 201-240: {math_ids[:5]}...")
+                    return False
+                
+                self.log_test("Questions Endpoint - Matematica", True, f"Successfully retrieved 40 math questions with correct structure and IDs 201-240")
+                return True
+                
+            else:
+                self.log_test("Questions Endpoint - Matematica", False, f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Questions Endpoint - Matematica", False, f"Exception: {str(e)}")
+            return False
+
+    def test_questions_endpoint_quimica(self):
+        """Test GET /api/questions/quimica - should return 40 chemistry questions"""
+        try:
+            response = self.session.get(f"{BACKEND_URL}/questions/quimica")
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Validate response structure
+                required_fields = ["subject", "questions", "total"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    self.log_test("Questions Endpoint - Quimica", False, f"Missing fields: {missing_fields}", data)
+                    return False
+                
+                # Validate subject
+                if data["subject"] != "quimica":
+                    self.log_test("Questions Endpoint - Quimica", False, f"Expected subject 'quimica', got '{data['subject']}'")
+                    return False
+                
+                # Validate total count
+                if data["total"] != 40:
+                    self.log_test("Questions Endpoint - Quimica", False, f"Expected 40 chemistry questions, got {data['total']}")
+                    return False
+                
+                # Validate questions array
+                questions = data["questions"]
+                if len(questions) != 40:
+                    self.log_test("Questions Endpoint - Quimica", False, f"Expected 40 questions in array, got {len(questions)}")
+                    return False
+                
+                # Validate question structure
+                for i, question in enumerate(questions[:5]):  # Check first 5 questions
+                    required_q_fields = ["id", "question", "options", "correctAnswer", "period", "subject"]
+                    missing_q_fields = [field for field in required_q_fields if field not in required_q_fields if field not in question]
+                    
+                    if missing_q_fields:
+                        self.log_test("Questions Endpoint - Quimica", False, f"Question {i+1} missing fields: {missing_q_fields}")
+                        return False
+                    
+                    # Validate subject is quimica
+                    if question["subject"] != "quimica":
+                        self.log_test("Questions Endpoint - Quimica", False, f"Question {i+1} has wrong subject: {question['subject']}")
+                        return False
+                    
+                    # Validate options format
+                    if not isinstance(question["options"], list) or len(question["options"]) != 4:
+                        self.log_test("Questions Endpoint - Quimica", False, f"Question {i+1} has invalid options format")
+                        return False
+                    
+                    # Validate correct answer is in options
+                    if question["correctAnswer"] not in question["options"]:
+                        self.log_test("Questions Endpoint - Quimica", False, f"Question {i+1} correct answer not in options")
+                        return False
+                
+                # Validate ID range (161-200 for chemistry questions)
+                chemistry_ids = [q["id"] for q in questions]
+                if not all(161 <= qid <= 200 for qid in chemistry_ids):
+                    self.log_test("Questions Endpoint - Quimica", False, f"Chemistry question IDs not in expected range 161-200: {chemistry_ids[:5]}...")
+                    return False
+                
+                self.log_test("Questions Endpoint - Quimica", True, f"Successfully retrieved 40 chemistry questions with correct structure and IDs 161-200")
+                return True
+                
+            else:
+                self.log_test("Questions Endpoint - Quimica", False, f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Questions Endpoint - Quimica", False, f"Exception: {str(e)}")
+            return False
+
+    def test_questions_endpoint_historia(self):
+        """Test GET /api/questions/historia - should return 60 history questions"""
+        try:
+            response = self.session.get(f"{BACKEND_URL}/questions/historia")
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Validate response structure
+                required_fields = ["subject", "questions", "total"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    self.log_test("Questions Endpoint - Historia", False, f"Missing fields: {missing_fields}", data)
+                    return False
+                
+                # Validate subject
+                if data["subject"] != "historia":
+                    self.log_test("Questions Endpoint - Historia", False, f"Expected subject 'historia', got '{data['subject']}'")
+                    return False
+                
+                # Validate total count
+                if data["total"] != 60:
+                    self.log_test("Questions Endpoint - Historia", False, f"Expected 60 history questions, got {data['total']}")
+                    return False
+                
+                # Validate questions array
+                questions = data["questions"]
+                if len(questions) != 60:
+                    self.log_test("Questions Endpoint - Historia", False, f"Expected 60 questions in array, got {len(questions)}")
+                    return False
+                
+                # Validate question structure
+                for i, question in enumerate(questions[:5]):  # Check first 5 questions
+                    required_q_fields = ["id", "question", "options", "correctAnswer", "period", "subject"]
+                    missing_q_fields = [field for field in required_q_fields if field not in question]
+                    
+                    if missing_q_fields:
+                        self.log_test("Questions Endpoint - Historia", False, f"Question {i+1} missing fields: {missing_q_fields}")
+                        return False
+                    
+                    # Validate subject is historia
+                    if question["subject"] != "historia":
+                        self.log_test("Questions Endpoint - Historia", False, f"Question {i+1} has wrong subject: {question['subject']}")
+                        return False
+                    
+                    # Validate options format
+                    if not isinstance(question["options"], list) or len(question["options"]) != 4:
+                        self.log_test("Questions Endpoint - Historia", False, f"Question {i+1} has invalid options format")
+                        return False
+                    
+                    # Validate correct answer is in options
+                    if question["correctAnswer"] not in question["options"]:
+                        self.log_test("Questions Endpoint - Historia", False, f"Question {i+1} correct answer not in options")
+                        return False
+                
+                # Validate ID range (1-60 for history questions)
+                history_ids = [q["id"] for q in questions]
+                if not all(1 <= qid <= 60 for qid in history_ids):
+                    self.log_test("Questions Endpoint - Historia", False, f"History question IDs not in expected range 1-60: {history_ids[:5]}...")
+                    return False
+                
+                self.log_test("Questions Endpoint - Historia", True, f"Successfully retrieved 60 history questions with correct structure and IDs 1-60")
+                return True
+                
+            else:
+                self.log_test("Questions Endpoint - Historia", False, f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Questions Endpoint - Historia", False, f"Exception: {str(e)}")
+            return False
+
+    def test_questions_endpoint_invalid_subject(self):
+        """Test GET /api/questions/invalida - should return 404"""
+        try:
+            response = self.session.get(f"{BACKEND_URL}/questions/invalida")
+            
+            if response.status_code == 404:
+                data = response.json()
+                
+                # Validate error response structure
+                if "detail" in data:
+                    self.log_test("Questions Endpoint - Invalid Subject", True, f"Correctly returned 404 for invalid subject: {data['detail']}")
+                    return True
+                else:
+                    self.log_test("Questions Endpoint - Invalid Subject", True, f"Correctly returned 404 status", data)
+                    return True
+                    
+            else:
+                self.log_test("Questions Endpoint - Invalid Subject", False, f"Expected 404, got {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Questions Endpoint - Invalid Subject", False, f"Exception: {str(e)}")
+            return False
+
     async def test_websocket_basic_connection(self):
         """Test basic WebSocket connection to /api/ws/{player_id}"""
         try:
