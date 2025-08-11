@@ -1218,15 +1218,147 @@ class TicTacToeAPITester:
             print(f"❌ WebSocket tests failed with exception: {str(e)}")
             return False
     
+    def test_mathematics_questions_system(self):
+        """Test the new mathematics questions functionality specifically"""
+        try:
+            print("🧮 Testing Mathematics Questions System")
+            print("=" * 50)
+            
+            # Test 1: Get random mathematics question
+            from questions import get_random_question, MATH_QUESTIONS, QUESTIONS
+            
+            # Verify mathematics questions exist in the system
+            math_questions = [q for q in QUESTIONS if q.get("subject") == "matematica"]
+            if len(math_questions) != 40:
+                self.log_test("Mathematics Questions Count", False, f"Expected 40 math questions, found {len(math_questions)}")
+                return False
+            
+            self.log_test("Mathematics Questions Count", True, f"Found {len(math_questions)} mathematics questions (IDs 201-240)")
+            
+            # Test 2: Verify ID range (201-240)
+            math_ids = [q["id"] for q in math_questions]
+            expected_ids = list(range(201, 241))  # 201 to 240 inclusive
+            missing_ids = set(expected_ids) - set(math_ids)
+            extra_ids = set(math_ids) - set(expected_ids)
+            
+            if missing_ids or extra_ids:
+                self.log_test("Mathematics Questions ID Range", False, f"Missing IDs: {missing_ids}, Extra IDs: {extra_ids}")
+                return False
+            
+            self.log_test("Mathematics Questions ID Range", True, "All mathematics questions have correct IDs (201-240)")
+            
+            # Test 3: Verify question structure and topics
+            topics_found = set()
+            valid_structure = True
+            structure_errors = []
+            
+            for question in math_questions:
+                # Check required fields
+                required_fields = ["id", "question", "options", "correctAnswer", "period", "subject"]
+                for field in required_fields:
+                    if field not in question:
+                        valid_structure = False
+                        structure_errors.append(f"Question {question.get('id', 'unknown')} missing field: {field}")
+                
+                # Check subject is 'matematica'
+                if question.get("subject") != "matematica":
+                    valid_structure = False
+                    structure_errors.append(f"Question {question.get('id')} has wrong subject: {question.get('subject')}")
+                
+                # Collect topics (periods)
+                if "period" in question:
+                    topics_found.add(question["period"])
+                
+                # Check options count
+                if "options" in question and len(question["options"]) != 4:
+                    valid_structure = False
+                    structure_errors.append(f"Question {question.get('id')} has {len(question['options'])} options, expected 4")
+            
+            if not valid_structure:
+                self.log_test("Mathematics Questions Structure", False, f"Structure errors: {structure_errors[:5]}")  # Show first 5 errors
+                return False
+            
+            self.log_test("Mathematics Questions Structure", True, f"All mathematics questions have valid structure")
+            
+            # Test 4: Verify topic diversity
+            expected_topics = {
+                "Aritmética", "Álgebra", "Geometria", "Frações", "Porcentagem", 
+                "Potenciação", "Radiciação", "Números Inteiros", "Estatística", 
+                "Medidas de Tempo", "Divisibilidade", "Frações e Decimais"
+            }
+            
+            topics_coverage = len(topics_found.intersection(expected_topics))
+            if topics_coverage < 8:  # At least 8 different math topics
+                self.log_test("Mathematics Topics Diversity", False, f"Only {topics_coverage} expected topics found: {topics_found}")
+                return False
+            
+            self.log_test("Mathematics Topics Diversity", True, f"Found {topics_coverage} different math topics: {sorted(topics_found)}")
+            
+            # Test 5: Test get_random_question with subject='matematica'
+            math_questions_retrieved = []
+            for i in range(10):  # Get 10 random math questions
+                question = get_random_question(subject="matematica")
+                if question["subject"] != "matematica":
+                    self.log_test("Get Random Math Question", False, f"Expected matematica, got {question['subject']}")
+                    return False
+                math_questions_retrieved.append(question["id"])
+            
+            # Check we got different questions (anti-repetition working)
+            unique_questions = len(set(math_questions_retrieved))
+            if unique_questions < 8:  # At least 8 different questions out of 10
+                self.log_test("Mathematics Anti-Repetition", False, f"Only {unique_questions} unique questions out of 10: {math_questions_retrieved}")
+                return False
+            
+            self.log_test("Get Random Math Question", True, f"Successfully retrieved 10 math questions with {unique_questions} unique questions")
+            
+            # Test 6: Verify total system now has 140 questions
+            total_questions = len(QUESTIONS)
+            historia_count = len([q for q in QUESTIONS if q.get("subject") == "historia"])
+            quimica_count = len([q for q in QUESTIONS if q.get("subject") == "quimica"])
+            matematica_count = len([q for q in QUESTIONS if q.get("subject") == "matematica"])
+            
+            expected_total = 140  # 60 + 40 + 40
+            if total_questions != expected_total:
+                self.log_test("Total Questions System", False, f"Expected {expected_total} total questions, found {total_questions}")
+                return False
+            
+            if historia_count != 60 or quimica_count != 40 or matematica_count != 40:
+                self.log_test("Subject Distribution", False, f"Expected 60 historia, 40 quimica, 40 matematica. Got: {historia_count}, {quimica_count}, {matematica_count}")
+                return False
+            
+            self.log_test("Total Questions System", True, f"System has {total_questions} questions: {historia_count} história + {quimica_count} química + {matematica_count} matemática")
+            
+            # Test 7: Test variety in multiple calls
+            print("Testing question variety across multiple calls...")
+            all_retrieved_questions = []
+            for i in range(25):  # Get 25 questions to test variety
+                question = get_random_question(subject="matematica")
+                all_retrieved_questions.append(question["id"])
+            
+            unique_in_25 = len(set(all_retrieved_questions))
+            if unique_in_25 < 20:  # At least 20 different questions out of 25
+                self.log_test("Mathematics Question Variety", False, f"Only {unique_in_25} unique questions out of 25 calls")
+                return False
+            
+            self.log_test("Mathematics Question Variety", True, f"Got {unique_in_25} unique questions out of 25 calls - good variety")
+            
+            print("🎉 All mathematics questions tests passed!")
+            return True
+            
+        except Exception as e:
+            self.log_test("Mathematics Questions System", False, f"Exception: {str(e)}")
+            return False
+
     def run_all_tests(self):
         """Run all backend API tests"""
         print("🚀 Starting Backend API Tests for Historical Tic-Tac-Toe Online Room System")
         print("=" * 80)
         print()
         
-        # Test sequence - Authentication tests first as requested
+        # Test sequence - Focus on mathematics questions as requested
         tests = [
             ("API Health Check", self.test_api_health),
+            ("🧮 NEW: Mathematics Questions System", self.test_mathematics_questions_system),
             ("Create Test User", self.test_create_test_user),
             ("Login Correct Credentials", self.test_login_correct_credentials),
             ("Login Incorrect Credentials", self.test_login_incorrect_credentials),
