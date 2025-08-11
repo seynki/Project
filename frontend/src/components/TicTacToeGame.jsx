@@ -441,12 +441,18 @@ const TicTacToeGame = ({ players, onBackToSetup, onGameEnd, subject = 'historia'
               <CardContent>
                 {!currentQuestion ? (
                   <div className="text-center py-12">
-                    <div className="text-6xl mb-4">🏛️</div>
+                    <div className="text-6xl mb-4">
+                      {subject === 'historia' && '🏛️'}
+                      {subject === 'quimica' && '🧪'}
+                      {subject === 'matematica' && '🔢'}
+                    </div>
                     <h3 className="text-xl font-semibold text-gray-700 mb-2">
                       {getCurrentPlayerName()}, clique em uma célula
                     </h3>
                     <p className="text-gray-500">
-                      para responder uma pergunta sobre a História do Brasil
+                      para responder uma pergunta sobre {subject === 'historia' && 'a História do Brasil'}
+                      {subject === 'quimica' && 'Química'}
+                      {subject === 'matematica' && 'Matemática'}
                     </p>
                   </div>
                 ) : (
