@@ -1007,7 +1007,7 @@ class TicTacToeAPITester:
             
             # Step 2: Connect WebSocket as TesterA
             print("Step 2: Connecting WebSocket as TesterA...")
-            ws_url_a = f"wss://91522345-49d4-43aa-8217-1f59e9996956.preview.emergentagent.com/api/ws/{creator_id}"
+            ws_url_a = f"{WS_URL}/{creator_id}"
             
             async with websockets.connect(ws_url_a) as ws_a:
                 # Clear initial connected message
