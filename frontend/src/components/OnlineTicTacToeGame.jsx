@@ -593,7 +593,9 @@ const OnlineTicTacToeGame = ({ roomData, onBackToSetup, onDisconnect, subject = 
                           Sua vez! Clique em uma célula
                         </h3>
                         <p className="text-gray-500">
-                          para responder uma pergunta sobre a História do Brasil
+                          para responder uma pergunta sobre {subject === 'historia' && 'a História do Brasil'}
+                          {subject === 'quimica' && 'Química'}
+                          {subject === 'matematica' && 'Matemática'}
                         </p>
                       </>
                     ) : (
